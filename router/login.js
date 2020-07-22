@@ -4,56 +4,45 @@
  * @Author: ZM_lee└(^o^)┘
  * @Date: 2020-07-15 22:30:20
  * @LastEditors: ZM_lee└(^o^)┘
- * @LastEditTime: 2020-07-16 07:35:44
+ * @LastEditTime: 2020-07-23 00:11:57
  */ 
 var { checkToken , createToken } = require("../utils/token")
 
 var express = require("express");
 var md5 = require("js-md5");
 var router  = express.Router();
+var handleRes = require('../utils/handleResult')
 
-const username = "WJR"
-const psw = "test123456"
-const md5psw = md5(md5(psw))
+const username = "admin"
+const pswpsw = "123456"
+const md5psw = md5(md5(pswpsw))
 
-//  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicHN3IjoiNTBkZGQ4YWRlM2Y3MDg3NDdiYzdiZmI1YzMxZWNhMWUiLCJydGllbSI6IjIwMjAtMDctMTVUMTQ6NTU6MDEuMzMyWiIsImV4cCI6NzIwMDAwMCwiaWF0IjoxNTk0ODI0OTAxfQ.-rY-s90R5YQCyoT-pQxu_S18jzo3b6_VBVnYrCKOoLw
 
-router.get('/login', function(req, res) {
-  let token = createToken({username, psw: md5psw});
+router.post('/login', async function(req, res) {
+  console.log('--login--', req.body);
+  const {userName, psw} = req.body
   const User = global.dbHandel.getModel('user');
-  var whereStr = {"name":username};  // 查询条件
-  User.create({
-    name: username,
-    psw: md5psw,
-    token,
-  }, function(err, result){
-    if(err) throw err
-    console.log('写入成功');
-    console.log(result);
-  })
-  const result = {
-    token,
-  }
-  const data = {
-    code: 200,
-    msg: 'ok',
-    result,
-  }
-  res.send(JSON.stringify(data))
-  res.end();
-  // checkToken(req.headers.Authorization).then(res=>{
-  //         //token验证成功
-  //         //判断过期时间
-  //     }).catch(err=>{
-  //         res.json({err:-1,msg:'token非法'})
-  //     })
-});
 
-// if(true){
-//   let token = createToken({username, psw: md5psw});
-//   res.json({err:0,msg:'OK',token});
-// }else{
-//   res.json({err:-1,msg:'fail'});
-// }
+  const result = await new Promise((resolve, reject) => {
+    User.find({userName}).then(res => resolve([null ,res])).catch(err => reject([err, null]))
+  })
+
+  if(result[0]){ // 是否服务器异常
+    res.status(500).send(handleRes.handleRes(500, ''))
+  } else if(result[1].length === 0){ // 用户名不存在
+    res.status(510).send(handleRes.handleRes(510,  ''))
+  } else if(result[1][0].psw !== psw){ // 密码错误
+    res.status(511).send(handleRes.handleRes(511, ''))
+  } else {
+      let token = createToken({userName, psw})
+      const resObj = {
+        token,
+        uid: result[1][0].userId,
+        userName: result[1][0].userId,
+      }
+      res.status(200).send(handleRes.handleRes(200, resObj))
+  }
+  res.end()
+});
 
 module.exports = router;

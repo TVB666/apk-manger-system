@@ -14,11 +14,11 @@ var router   = express.Router();
 const list = []
 for (let index = 1; index < 11; index++) {
   const startTime = new Date().getTime() + index * 1000;
-  const endTime = startTime + 3 * 60 * 60 * 1000;
+  const overTime = startTime + 3 * 60 * 60 * 1000;
   const version = index;
   const describe = `我是描述${index}`;
   const user = `张三的第${index}个女儿`;
-  const obj = {startTime,endTime,version,describe,user}
+  const obj = {startTime,overTime,version,describe,user}
   list.push(obj)
 }
 

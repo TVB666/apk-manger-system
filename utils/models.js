@@ -1,11 +1,32 @@
 var mongoose=require('mongoose');
 module.exports = {
 	user:{
-		name:{type:String,required:true},
-    phone:{type:Number},
-    useId:{type:Number},
-		psw:{type:String,required:true},
-		token:{type:String,required:true},
+		userName:{type:String,required:true},
+    useId:{type:String},
+    psw:{type:String},
 	},
-
+  Order: {
+    version: {type:String},
+    userName: {type:String},
+    createTime: {type: Number},
+    overTime: {type: Number},
+    finishTime: {type: Number},
+    userId: {type: Number},
+    orderStatus:  {type: Number},
+    orderId:{type:Number},
+    platformType:{type:String},
+  },
+  ApkInfo:{
+    userId: {type: Number},
+    userName: {type:String},
+    version: {type:String},
+    createTime: {type: Number},
+    overTime: {type: Number},
+    finishTime: {type: Number},
+    orderStatus:  {type: Number},
+    orderId:{type:Number},
+    platformType:{type:String},
+    url: {type:String},
+    checkerId: {type:Number}
+  }
 };

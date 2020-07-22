@@ -4,7 +4,7 @@
  * @Author: ZM_lee└(^o^)┘
  * @Date: 2020-07-13 22:16:16
  * @LastEditors: ZM_lee└(^o^)┘
- * @LastEditTime: 2020-07-15 22:55:51
+ * @LastEditTime: 2020-07-22 21:19:56
  */
 var express = require('express');
 const mongoose = require('mongoose');
@@ -30,13 +30,15 @@ app.use(bodyParser.json())
 const getApkList = require('./router/getApkList')
 const home = require('./router/home')
 const login = require('./router/login')
-const getToken = require('./router/getToken')
 const orderVersion = require('./router/orderVersion')
+const upload = require('./router/upload')
+const bindingApk = require('./router/bindingApk')
 
 app.use('/', cors(), login)
 app.use('/', cors(), getApkList)
-app.use('/', cors(), getToken)
 app.use('/', cors(), orderVersion)
+app.use('/', cors(), upload)
+app.use('/', cors(), bindingApk)
 app.use('/', cors(), home)
 
 app.listen('3000', function () {

@@ -22,14 +22,17 @@ MongoClient.connect(url, {
   // });
 
   // 写入数据C 连接哭 collection 单条 insertOne  多条 insertMany  
+  var useObj = [
+    {userName: 'admin', userId: 10086, psw: "14e1b600b1fd579f47433b88e8d85291", creatTime: new Date().getTime(), manager: 0 },
+  ]
   // var useObj = [
   //   {userName: 'lzm', userId: 10010, psw: "14e1b600b1fd579f47433b88e8d85291", creatTime: new Date().getTime(), manager: 1 },
   // ]
-  // dbBase.collection("user").insertMany(useObj, function(err, res){
-  //   if(err) throw err
-  //   console.log('插入成功');
-  //   db.close
-  // })
+  dbBase.collection("user").insertMany(useObj, function(err, res){
+    if(err) throw err
+    console.log('插入成功');
+    db.close
+  })
   // var orderObj = [
   //   {userName: 'admin', userId: 10086, version: '1.0.1.0.1', createTime: new Date().getTime(), overTime: new Date().getTime() + 1000 * 60 * 60 * 24 * 3, finishTime: '', orderId: 1, orderStatus: 0 },
   // ]
@@ -38,14 +41,14 @@ MongoClient.connect(url, {
   //   console.log('插入成功');
   //   db.close
   // })
-    var orderObj = [
-      {userName: 'admin', userId: 10086, version: '1.0.1.0.1', createTime: new Date().getTime(), overTime: new Date().getTime() + 1000 * 60 * 60 * 24 * 3, finishTime: '', orderId: 1, orderStatus: 0 },
-    ]
-    dbBase.collection("apkList").insertMany(orderObj, function(err, res){
-      if(err) throw err
-      console.log('插入成功');
-      db.close
-    })
+    // var orderObj = [
+    //   {userName: 'admin', userId: 10086, version: '1.0.1.0.1', createTime: new Date().getTime(), overTime: new Date().getTime() + 1000 * 60 * 60 * 24 * 3, finishTime: '', orderId: 1, orderStatus: 0 },
+    // ]
+    // dbBase.collection("apkList").insertMany(orderObj, function(err, res){
+    //   if(err) throw err
+    //   console.log('插入成功');
+    //   db.close
+    // })
 
   // 查询数据 R  find
   // var whereStr = {"name":'ZH'};  // 查询条件

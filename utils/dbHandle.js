@@ -15,8 +15,7 @@ var models = require("./models");
 // }
 
 mongoose.model("user", new Schema(models.user, { collection: "user"}));
-mongoose.model("Order", new Schema(models.Order, { collection: "orderList"}));
-mongoose.model("ApkInfo", new Schema(models.Order, { collection: "apkList"}));
+mongoose.model("ApkInfo", new Schema(models.ApkInfo, { collection: "apkList"}));
 
 module.exports = { 
 	getModel: function(type){ 

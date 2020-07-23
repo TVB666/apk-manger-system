@@ -9,7 +9,6 @@
 var express = require("express");
 var fs = require("fs");
 var router = express.Router();
-var tokenMethods = require("../utils/token")
 const path = require("path");
 var multer  = require('multer');
 var bodyParser = require('body-parser')
@@ -30,7 +29,6 @@ var createFolder = function(folder){
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
-      console.log('-------')
       const d = new Date()
       const nowDay = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
       var uploadFolder = `./uploads/${nowDay}`;// 设定存储文件夹路径
@@ -47,7 +45,8 @@ var upload = multer({ storage: storage })
 
 router.post("/upload", upload.array('file'), function(req, res){
   console.log('---/upload----', req.files)
-  if (!req.files || Object.keys(req.files).length === 0) {
+  
+  if (!req.files || Object.keys(req.files).length === 0) { // 没有文件
     res.status(400).send(handleRes.handleRes(400, ''));
   } else {
     const resultObj = {

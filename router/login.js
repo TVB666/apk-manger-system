@@ -4,7 +4,7 @@
  * @Author: ZM_lee└(^o^)┘
  * @Date: 2020-07-15 22:30:20
  * @LastEditors: ZM_lee└(^o^)┘
- * @LastEditTime: 2020-07-23 00:11:57
+ * @LastEditTime: 2020-07-24 22:09:13
  */ 
 var { checkToken , createToken } = require("../utils/token")
 
@@ -37,7 +37,7 @@ router.post('/login', async function(req, res) {
       let token = createToken({userName, psw})
       const resObj = {
         token,
-        uid: result[1][0].userId,
+        userId: result[1][0].userId,
         userName: userName,
       }
       res.status(200).send(handleRes.handleRes(200, resObj))

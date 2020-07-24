@@ -2,8 +2,10 @@ var mongoose=require('mongoose');
 module.exports = {
 	user:{
 		userName:{type:String,required:true},
-    useId:{type:String},
+    userId:{type:Number},
     psw:{type:String},
+    createTime: {type:Date},
+    manager: {type:Number}
 	},
   ApkInfo:{
     userId: {type: Number, require: true},

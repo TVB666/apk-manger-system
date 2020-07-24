@@ -38,7 +38,7 @@ router.post('/login', async function(req, res) {
       const resObj = {
         token,
         uid: result[1][0].userId,
-        userName: result[1][0].userId,
+        userName: userName,
       }
       res.status(200).send(handleRes.handleRes(200, resObj))
   }

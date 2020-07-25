@@ -1,11 +1,23 @@
-/*
- * @Descripttion: 登录
- * @version: 1.0
- * @Author: ZM_lee└(^o^)┘
- * @Date: 2020-07-15 22:30:20
- * @LastEditors: ZM_lee└(^o^)┘
- * @LastEditTime: 2020-07-24 22:09:13
- */ 
+/**
+ * @api {post} /login
+ * @apiGroup account
+ * @apiDescription  登陆接口
+ * @apiVersion  1.0.0
+ * 
+ * @apiParam {String} userName 用户名
+ * @apiParam {String} psw 密码 两重MD5
+ * 
+ * @apiSuccessExample {json} Success-Response:
+ *   {  
+ *    code: 200 ,
+ *    msg: 'ok',
+ *    res: {
+ *       "token": "abcdefghijk",
+ *       "userId": 1111111,
+ *       "userName": "张三"
+ *    }
+ *  }
+ */
 var { checkToken , createToken } = require("../utils/token")
 
 var express = require("express");
@@ -16,7 +28,6 @@ var handleRes = require('../utils/handleResult')
 const username = "admin"
 const pswpsw = "123456"
 const md5psw = md5(md5(pswpsw))
-
 
 router.post('/login', async function(req, res) {
   console.log('--login--', req.body);

@@ -1,0 +1,10 @@
+{
+  "name": "lzm",
+  "version": "1.0.0",
+  "description": "apk管理平台接口",
+  "title": "API文档",
+  "url" : "http://172.28.4.46:3000",
+  "template":{
+    "forceLanguage":"zh_cn"
+  }
+}

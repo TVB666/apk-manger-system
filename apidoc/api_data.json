@@ -112,15 +112,15 @@
             "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "userName",
-            "description": "<p>用户名</p>"
+            "field": "account",
+            "description": "<p>用户名 eg: '560666'</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": false,
             "field": "psw",
-            "description": "<p>密码 两重MD5</p>"
+            "description": "<p>密码 两重MD5 eg: '123456'</p>"
           }
         ]
       }
@@ -129,7 +129,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": " {  \n  code: 200 ,\n  msg: 'ok',\n  res: {\n     \"token\": \"abcdefghijk\",\n     \"userId\": 1111111,\n     \"userName\": \"张三\"\n  }\n}",
+          "content": " {  \n  code: 200 ,\n  msg: 'ok',\n  res: {\n     \"token\": \"abcdefghijk\",\n     \"userId\": 1111111,\n     \"userName\": \"张三\"\n     \"account\" : \"账号\"\n  }\n}",
           "type": "json"
         }
       ]
@@ -175,6 +175,13 @@
             "optional": false,
             "field": "platformType",
             "description": "<p>平台  0: '格力+', 1: 'GREE+'</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "describe",
+            "description": "<p>描述</p>"
           }
         ]
       }
@@ -249,7 +256,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "{  \n   code: 200 ,\n   msg: 'ok',\n   res: {\n     total: 总数,\n     total_pages: 总页数,\n     data: [],\n     page: 页码,\n     limit: 每页限制\n   }\n }",
+          "content": "{  \n   code: 200 ,\n   msg: 'ok',\n   res: {\n     total: 总数,\n     total_pages: 总页数,\n     data: [{\n          userId:10086,\n          userName: 'admin',\n          version:\"100.10.112\",\n          describe: '我是描述'\n          createTime:2020-07-23T11:27:34.483+00:00,\n          fixTime: 2020-07-23T11:27:34.483+00:00, // 修改时间\n          overTime: 2020-07-27T14:28:13.487+00:00,\n          uploadTime: \"2020-07-23T11:27:34.483+00:00\" // 文件上传时间\n          finishTime:null,\n          checkTime： \"2020-07-23T11:27:34.483+00:00\" // 审批时间\n          finishTime: \"2020-07-23T11:27:34.483+00:00\", // 完成时间\n          orderStatus:2,  //   0: '未使用', 1: '预约使用中', 2: '待审核', 3: '待修改',  4: '已完成'\n          platformType:0,  //  0: '格力+',  1: 'Gree+'\n          url:\"uploads\\2020-7-24\\Greeplus_In_4.0.0.20_202007248.apk\",\n          checkerId:null, // 审批人\n          orderId:15 //订单id\n     }],\n     page: 页码,\n     limit: 每页限制\n   }\n }",
           "type": "json"
         }
       ]

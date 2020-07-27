@@ -4,7 +4,7 @@
  * @Author: ZM_lee└(^o^)┘
  * @Date: 2020-07-20 23:57:16
  * @LastEditors: ZM_lee└(^o^)┘
- * @LastEditTime: 2020-07-27 12:16:34
+ * @LastEditTime: 2020-07-27 20:57:52
  */
 // code 大全
 const codeObj = {
@@ -27,8 +27,8 @@ const codeObj = {
 const orderStatus = {
   0: '未使用',
   1: '预约使用中',
-  3: '待修改',
   2: '待审核',
+  3: '待修改',
   4: '已完成'
 }
 

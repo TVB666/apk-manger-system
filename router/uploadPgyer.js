@@ -31,7 +31,7 @@ const pgyerUrl = 'https://www.pgyer.com/apiv2/app/upload'
 //   headers: { 'enctype': 'multipart/form-data' }
 // }
 
-router.post('/uploadPgyer', function (req, res) {
+router.post('/uploadPgyer', async function (req, res) {
   try {
     console.log('-----uploadPgyer---------', req.body);
     const token = req.headers.token
@@ -105,21 +105,21 @@ router.post('/uploadPgyer', function (req, res) {
     }
     needle.post(pgyerUrl, data, {
       multipart: true
-    }, function (err, resp, body) {
+    }, async function (err, resp, body) {
       console.log('err', err);
       if(err) throw err
       console.log('body', body);
       // 更新数据库
       const updataObj = {
-        checkTime: new Data().getTime(),
-        finishTime: new Data().getTime(), 
+        checkTime: new Date().getTime(),
+        finishTime: new Date().getTime(), 
         orderStatus: 4,
-        checkerId: orderId >> 0
+        checkerId: userId >> 0
       }
-      const setObj = { $set: apkObj }
+      const setObj = { $set: updataObj }
       const whatUpdate = {orderId: orderId >> 0}
       const apkResult = await new Promise((resolve, reject) => {
-        ApkInfo.updateMany(whatUpdate, setObj).then(res => resolve([null, res])).catch(err => reject([err, null]))
+        ApkModel.updateMany(whatUpdate, setObj).then(res => resolve([null, res])).catch(err => reject([err, null]))
       })
       if(apkResult[0]) throw err
       res.status(200).send(handleRes.handleRes(200, apkResult[1][0]))

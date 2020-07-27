@@ -8,6 +8,7 @@
  * @apiParam {String} url 文件路径 
  * @apiParam {String} version 预约版本 
  * @apiParam {Number} platformType 平台  0: '格力+', 1: 'GREE+'
+ * @apiParam {String} describe 描述 
  * 
  * @apiHeader {String} token 
  * 
@@ -41,19 +42,21 @@ router.post('/bindingApk', async function (req, res) {
     res.end();
     return
   } 
-  console.log('---/bindingApk---', req.body);
 
+  console.log('---/bindingApk---', req.body);
   const {
     userId,
     url,
     version,
-    platformType
+    platformType,
+    describe
   } = req.body
-  if(!(userId && version && platformType && url)){
+  if(!(userId && version && platformType && url && describe)){
     res.status(515).send(handleRes.handleRes(515, ''))
     res.end()
     return;
   }
+
   const User = global.dbHandel.getModel('user');
   const ApkModel = global.dbHandel.getModel('ApkInfo');
   const result = await new Promise((resolve, reject) => {
@@ -68,7 +71,7 @@ router.post('/bindingApk', async function (req, res) {
   }
 
   // 此时已确认User存在
-  const verResult = await new Promise((resolve, reject) => { ApkModel.find({version}).then(res => resolve([null, res])).catch(err => reject([err, null]))})
+  const verResult = await new Promise((resolve, reject) => { ApkModel.find({version, platformType}).then(res => resolve([null, res])).catch(err => reject([err, null]))})
   // console.log('verResult', verResult);
   if (verResult[1].length === 0) { // 版本不存在
     res.status(512).send(handleRes.handleRes(512, ''))
@@ -88,6 +91,7 @@ router.post('/bindingApk', async function (req, res) {
       uploadTime: new Date().getTime(),
       orderStatus: 3,
       url,
+      describe
     }
     const setObj = { $set: apkObj }
     const whatUpdate = {userId: userId >> 0}

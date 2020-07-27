@@ -4,8 +4,8 @@
  * @apiDescription  登陆接口
  * @apiVersion  1.0.0
  * 
- * @apiParam {String} userName 用户名
- * @apiParam {String} psw 密码 两重MD5
+ * @apiParam {String} account 用户名 eg: '560666'
+ * @apiParam {String} psw 密码 两重MD5 eg: '123456'
  * 
  * @apiSuccessExample {json} Success-Response:
  *   {  
@@ -15,6 +15,7 @@
  *       "token": "abcdefghijk",
  *       "userId": 1111111,
  *       "userName": "张三"
+ *       "account" : "账号"
  *    }
  *  }
  */
@@ -25,17 +26,18 @@ var md5 = require("js-md5");
 var router  = express.Router();
 var handleRes = require('../utils/handleResult')
 
-const username = "admin"
-const pswpsw = "123456"
-const md5psw = md5(md5(pswpsw))
+const account = "560666"
+const pswpsw0 = "123456"
+const md5psw = md5(md5(pswpsw0))
+
 
 router.post('/login', async function(req, res) {
   console.log('--login--', req.body);
-  const {userName, psw} = req.body
+  const {account, psw} = req.body
   const User = global.dbHandel.getModel('user');
 
   const result = await new Promise((resolve, reject) => {
-    User.find({userName}).then(res => resolve([null ,res])).catch(err => reject([err, null]))
+    User.find({account}).then(res => resolve([null ,res])).catch(err => reject([err, null]))
   })
 
   if(result[0]){ // 是否服务器异常
@@ -45,11 +47,12 @@ router.post('/login', async function(req, res) {
   } else if(result[1][0].psw !== psw){ // 密码错误
     res.status(511).send(handleRes.handleRes(511, ''))
   } else {
-      let token = createToken({userName, psw})
+      let token = createToken({account, psw})
       const resObj = {
         token,
         userId: result[1][0].userId,
-        userName: userName,
+        userName: result[1][0].userName,
+        account,
       }
       res.status(200).send(handleRes.handleRes(200, resObj))
   }

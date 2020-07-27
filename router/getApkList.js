@@ -1,3 +1,11 @@
+/*
+ * @Descripttion: 
+ * @version: 1.1
+ * @Author: ZM_lee└(^o^)┘
+ * @Date: 2020-07-20 21:38:14
+ * @LastEditors: ZM_lee└(^o^)┘
+ * @LastEditTime: 2020-07-27 21:45:33
+ */ 
 /**
  * @api {get} /getApkList
  * @apiGroup 获取预约列表
@@ -16,7 +24,24 @@
  *      res: {
  *        total: 总数,
  *        total_pages: 总页数,
- *        data: [],
+ *        data: [{
+            userId:10086,
+            userName: 'admin',
+            version:"100.10.112",
+            describe: '我是描述'
+            createTime:2020-07-23T11:27:34.483+00:00,
+            fixTime: 2020-07-23T11:27:34.483+00:00, // 修改时间
+            overTime: 2020-07-27T14:28:13.487+00:00,
+            uploadTime: "2020-07-23T11:27:34.483+00:00" // 文件上传时间
+            finishTime:null,
+            checkTime： "2020-07-23T11:27:34.483+00:00" // 审批时间
+            finishTime: "2020-07-23T11:27:34.483+00:00", // 完成时间
+            orderStatus:2,  //   0: '未使用', 1: '预约使用中', 2: '待审核', 3: '待修改',  4: '已完成'
+            platformType:0,  //  0: '格力+',  1: 'Gree+'
+            url:"uploads\2020-7-24\Greeplus_In_4.0.0.20_202007248.apk",
+            checkerId:null, // 审批人
+            orderId:15 //订单id
+ *        }],
  *        page: 页码,
  *        limit: 每页限制
  *      }

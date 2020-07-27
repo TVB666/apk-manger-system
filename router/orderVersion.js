@@ -44,6 +44,7 @@ router.post('/orderVersion', async function (req, res) {
       res.end();
       return
     } 
+
     console.log('---orderVersion----', req.body);
     const {
       userId,
@@ -55,6 +56,7 @@ router.post('/orderVersion', async function (req, res) {
       res.end()
       return;
     }
+
     const User = global.dbHandel.getModel('user');
     const userResult = await new Promise((resolve, reject) => {
       User.find({userId: userId >> 0}).then(res => resolve([null ,res])).catch(err => reject([err, null]))
@@ -70,19 +72,24 @@ router.post('/orderVersion', async function (req, res) {
     const findVerResult = await new Promise((resolve, reject) => {
       ApkModel.find({version, platformType}).then(res => resolve([null ,res])).catch(err => reject([err, null]))
     })
+    // try {
+    //   ApkModel.collection.createIndex({ "createdAt": 1 }, { expireAfterSeconds: 10 } )
+    // } catch (error) {
+    //   console.log('-------',error);
+    // }
     console.log('findVerResult', findVerResult);
     if(findVerResult[1].length === 0){ // 版本不存在
       console.log('--锁定版本--'); // 锁定版本
+      const orderId  = await global.dbHandel.getNextSequenceValue('orderId')   
       const writeObj = {
         userId,
+        userName: userResult[1][0].userName,
         createTime: new Date().getTime(), // 生成时间
         overTime: new Date().getTime() + 1000 * 60 * 60 * 24 * 3, // 超期时间
         orderStatus: 1, // 状态
         platformType, // 平台
         version,
-        url: null,
-        checkerId: null,
-        orderId: null
+        orderId: orderId >> 0,
       }
       const writeResult = await new Promise((resolve, reject) => {
         ApkModel.insertMany(writeObj).then(res => resolve([null ,res])).catch(err => reject([err, null]))
@@ -91,7 +98,7 @@ router.post('/orderVersion', async function (req, res) {
       if(writeResult[0]){
         res.status(500).send(handleRes.handleRes(500, '')) // ok
       }else{
-        res.status(200).send(handleRes.handleRes(200, writeObj)) // ok
+        res.status(200).send(handleRes.handleRes(200, writeResult[1][0])) // ok
       }
     } else if(findVerResult[1][0].userId != userId){ 
       res.status(514).send(handleRes.handleRes(514, '')) //判断该版本是否是该使用者

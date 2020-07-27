@@ -4,7 +4,7 @@
  * @Author: ZM_lee└(^o^)┘
  * @Date: 2020-07-13 22:16:16
  * @LastEditors: ZM_lee└(^o^)┘
- * @LastEditTime: 2020-07-25 00:33:09
+ * @LastEditTime: 2020-07-27 11:10:06
  */
 var express = require('express');
 const mongoose = require('mongoose');
@@ -31,14 +31,14 @@ const getApkList = require('./router/getApkList')
 const home = require('./router/home')
 const login = require('./router/login')
 const orderVersion = require('./router/orderVersion')
-const upload = require('./router/upload')
+const uploadApk = require('./router/uploadApk')
 const bindingApk = require('./router/bindingApk')
 const uploadPgyer = require('./router/uploadPgyer')
 
 app.use('/', cors(), login)
 app.use('/', cors(), getApkList)
 app.use('/', cors(), orderVersion)
-app.use('/', cors(), upload)
+app.use('/', cors(), uploadApk)
 app.use('/', cors(), bindingApk)
 app.use('/', cors(), uploadPgyer)
 app.use('/', cors(), home)

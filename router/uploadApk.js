@@ -1,11 +1,23 @@
-/*
- * @Descripttion: 文件上传
- * @version: 1.0
- * @Author: ZM_lee└(^o^)┘
- * @Date: 2020-07-21 22:32:19
- * @LastEditors: ZM_lee└(^o^)┘
- * @LastEditTime: 2020-07-23 00:16:24
- */ 
+/**
+ * @api {post} /uploadApk
+ * @apiGroup apk包上传
+ * @apiDescription  apk包上传
+ * @apiVersion  1.0.0
+ * 
+ * @apiParam {File} file 文件
+ * @apiHeader {String} Content-Type 设置 multipart/form-data
+ * 
+ * @apiSuccessExample {json} Success-Response:
+ *   {  
+ *    code: 200 ,
+ *    msg: 'ok',
+ *    res: {
+ *     url: url, // 文件路径
+ *     size: size // 文件大小
+ *    }
+ *  }
+ */
+
 var express = require("express");
 var fs = require("fs");
 var router = express.Router();
@@ -43,8 +55,8 @@ var storage = multer.diskStorage({
 
 var upload = multer({ storage: storage })
 
-router.post("/upload", upload.array('file'), function(req, res){
-  console.log('---/upload----', req.files)
+router.post("/uploadApk", upload.array('file'), function(req, res){
+  console.log('---/uploadApk----', req.files)
   
   if (!req.files || Object.keys(req.files).length === 0) { // 没有文件
     res.status(400).send(handleRes.handleRes(400, ''));

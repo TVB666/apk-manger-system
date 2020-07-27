@@ -1,6 +1,6 @@
 /**
  * @api {post} /login
- * @apiGroup account
+ * @apiGroup 登录
  * @apiDescription  登陆接口
  * @apiVersion  1.0.0
  * 

@@ -1,3 +1,34 @@
+/**
+ * @api {post} /orderVersion
+ * @apiGroup 预约版本
+ * @apiDescription  预约版本
+ * @apiVersion  1.0.0
+ * 
+ * @apiParam {Number} userId 用户id
+ * @apiParam {String} version 预约的版本 
+ * @apiParam {Number} platformType 平台  0: '格力+', 1: 'GREE+'
+ * 
+ * @apiHeader {String} token 
+ * 
+ * @apiSuccessExample {json} Success-Response:
+ *   {  
+ *    code: 200 ,
+ *    msg: 'ok',
+ *    res: {
+        userId: 10000,
+        createTime: 1595818787325, // 生成时间
+        overTime: 1595821787325, // 超期时间
+        finishTime: null,  // 
+        orderStatus: 1, // 状态 
+        platformType： 0, // 平台
+        version: version,
+        url: null,
+        checkerId: null,
+        orderId: 1
+      }
+ *  }
+ */
+
 var express = require("express");
 var router = express.Router();
 var tokenMethods = require("../utils/token")
@@ -20,9 +51,7 @@ router.post('/orderVersion', async function (req, res) {
       platformType
     } = req.body
     if(!(userId && version && platformType)){
-      !userId && res.status(515).send(handleRes.handleRes(515, 'userId 缺失'))
-      !version && res.status(515).send(handleRes.handleRes(515, 'version 缺失'))
-      !platformType && res.status(515).send(handleRes.handleRes(515, 'platformType 缺失'))
+      res.status(515).send(handleRes.handleRes(515, ''))
       res.end()
       return;
     }
@@ -48,8 +77,6 @@ router.post('/orderVersion', async function (req, res) {
         userId,
         createTime: new Date().getTime(), // 生成时间
         overTime: new Date().getTime() + 1000 * 60 * 60 * 24 * 3, // 超期时间
-        bingTime: null,
-        finishTime: null,  // 
         orderStatus: 1, // 状态
         platformType, // 平台
         version,

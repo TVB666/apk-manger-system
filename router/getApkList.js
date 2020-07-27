@@ -1,11 +1,28 @@
-/*
- * @Descripttion: 获取apk列表
- * @version: 1.0
- * @Author: ZM_lee└(^o^)┘
- * @Date: 2020-07-15 00:49:30
- * @LastEditors: ZM_lee└(^o^)┘
- * @LastEditTime: 2020-07-23 02:23:18
- */
+/**
+ * @api {get} /getApkList
+ * @apiGroup 获取预约列表
+ * @apiDescription  获取预约列表
+ * @apiVersion  1.0.0
+ * 
+ * @apiParam {Number} page 页码
+ * @apiParam {Number} limit 每页限制
+ * 
+ * @apiHeader {String} token  token
+ * 
+ * @apiSuccessExample {json} Success-Response:
+ *   {  
+ *      code: 200 ,
+ *      msg: 'ok',
+ *      res: {
+ *        total: 总数,
+ *        total_pages: 总页数,
+ *        data: [],
+ *        page: 页码,
+ *        limit: 每页限制
+ *      }
+ *    }
+ *
+ **/
 var express = require("express");
 var router = express.Router();
 var tokenMethods = require("../utils/token")
@@ -17,11 +34,11 @@ router.get("/getApkList", async function (req, res) {
     console.log('-----getApkList---------', req.query);
     const token = req.headers.token
     const tokenResult = tokenMethods.verifyToken(token)
-    // if (!tokenResult.success) {
-    //   res.status(501).send(handleRes.handleRes(501, ''))
-    //   res.end();
-    //   return;
-    // }
+    if (!tokenResult.success) {
+      res.status(501).send(handleRes.handleRes(501, ''))
+      res.end();
+      return;
+    }
     const ApkInfo = global.dbHandel.getModel('ApkInfo');
     const apkResult = await new Promise((resolve, reject) => {
       ApkInfo.find().then(res => resolve([null, res])).catch(err => reject([err, null]))

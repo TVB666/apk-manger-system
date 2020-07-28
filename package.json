@@ -9,6 +9,7 @@
   },
   "scripts": {
     "serve" : "node app.js",
+    "apiserve": "cd apidoc && http-server ./", 
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "LZM",

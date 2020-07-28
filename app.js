@@ -17,9 +17,8 @@ global.db = mongoose.connect("mongodb://localhost:27017/apkManagerSystem", {
     useNewUrlParser: true,
     useUnifiedTopology: true
   })
-  .then(res => {
-    console.log('数据库连接成功')
-  })
+  .then(res => {console.log('数据库连接成功')})
+  .catch(err => {console.error('数据库连接失败')})
 
 
 

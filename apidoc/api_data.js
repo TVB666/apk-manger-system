@@ -129,7 +129,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": " {  \n  code: 200 ,\n  msg: 'ok',\n  res: {\n     \"token\": \"abcdefghijk\",\n     \"userId\": 1111111,\n     \"userName\": \"张三\"\n     \"account\" : \"账号\"\n  }\n}",
+          "content": " {  \n  code: 200 ,\n  msg: 'ok',\n  res: {\n     \"token\": \"abcdefghijk\",\n     \"userId\": 1111111,\n     \"userName\": \"张三\"\n     \"account\" : \"账号\",\n      \"manager\" :  0, // 管理权限 0 普通会员 1 管理员 2 超级管理员\n  }\n}",
           "type": "json"
         }
       ]

@@ -94,9 +94,9 @@ router.post('/bindingApk', async function (req, res) {
       describe
     }
     const setObj = { $set: apkObj }
-    const whatUpdate = {userId: userId >> 0}
+    const whatUpdate = {orderId: verResult[1][0].orderId >> 0}
     const apkResult = await new Promise((resolve, reject) => {
-      ApkInfo.updateMany(whatUpdate, setObj).then(res => resolve([null, res])).catch(err => reject([err, null]))
+      ApkInfo.updateOne(whatUpdate, setObj).then(res => resolve([null, res])).catch(err => reject([err, null]))
     })
     if(apkResult[0]) throw err
     res.status(200).send(handleRes.handleRes(200, apkObj)) // ok

@@ -100,7 +100,7 @@ router.post('/uploadPgyer', async function (req, res) {
       },
       buildInstallType: 2,
       buildPassword: 'iot4',
-      buildUpdateDescription: 'apk测试使用,  非专业人士勿下载',
+      buildUpdateDescription: findOrderResult[1][0].describe,
       buildName: '格力+'
     }
     needle.post(pgyerUrl, data, {
@@ -119,7 +119,7 @@ router.post('/uploadPgyer', async function (req, res) {
       const setObj = { $set: updataObj }
       const whatUpdate = {orderId: orderId >> 0}
       const apkResult = await new Promise((resolve, reject) => {
-        ApkModel.updateMany(whatUpdate, setObj).then(res => resolve([null, res])).catch(err => reject([err, null]))
+        ApkModel.updateOne(whatUpdate, setObj).then(res => resolve([null, res])).catch(err => reject([err, null]))
       })
       if(apkResult[0]) throw err
       res.status(200).send(handleRes.handleRes(200, apkResult[1][0]))

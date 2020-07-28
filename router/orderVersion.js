@@ -72,11 +72,11 @@ router.post('/orderVersion', async function (req, res) {
     const findVerResult = await new Promise((resolve, reject) => {
       ApkModel.find({version, platformType}).then(res => resolve([null ,res])).catch(err => reject([err, null]))
     })
-    // try {
-    //   ApkModel.collection.createIndex({ "createdAt": 1 }, { expireAfterSeconds: 10 } )
-    // } catch (error) {
-    //   console.log('-------',error);
-    // }
+    try {
+      ApkModel.createIndexes({ "createdAt": 1 }, { expireAfterSeconds: 10 } )
+    } catch (error) {
+      console.log('-------',error);
+    }
     console.log('findVerResult', findVerResult);
     if(findVerResult[1].length === 0){ // 版本不存在
       console.log('--锁定版本--'); // 锁定版本

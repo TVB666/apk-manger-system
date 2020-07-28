@@ -15,7 +15,8 @@
  *       "token": "abcdefghijk",
  *       "userId": 1111111,
  *       "userName": "张三"
- *       "account" : "账号"
+ *       "account" : "账号",
+ *        "manager" :  0, // 管理权限 0 普通会员 1 管理员 2 超级管理员
  *    }
  *  }
  */
@@ -48,11 +49,12 @@ router.post('/login', async function(req, res) {
     res.status(511).send(handleRes.handleRes(511, ''))
   } else {
       let token = createToken({account, psw})
-      const resObj = {
+      let resObj = {
         token,
         userId: result[1][0].userId,
         userName: result[1][0].userName,
-        account,
+        account: result[1][0].account,
+        manager: result[1][0].manager,
       }
       res.status(200).send(handleRes.handleRes(200, resObj))
   }

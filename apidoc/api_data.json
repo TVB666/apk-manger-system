@@ -49,7 +49,7 @@
     "type": "post",
     "url": "/uploadPgyer",
     "title": "",
-    "group": "上传蒲公英",
+    "group": "上传蒲公英(准备弃用)",
     "description": "<p>上传蒲公英(同意按钮)</p>",
     "version": "1.0.0",
     "parameter": {
@@ -95,8 +95,61 @@
       ]
     },
     "filename": "router/uploadPgyer.js",
-    "groupTitle": "上传蒲公英",
+    "groupTitle": "上传蒲公英(准备弃用)",
     "name": "PostUploadpgyer"
+  },
+  {
+    "type": "post",
+    "url": "/deleteOrder",
+    "title": "",
+    "group": "删除单号(准备弃用)",
+    "description": "<p>删除单号(删除按钮)</p>",
+    "version": "1.0.0",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "userId",
+            "description": "<p>用户id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "orderId",
+            "description": "<p>预约单号</p>"
+          }
+        ]
+      }
+    },
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": ""
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": " {  \n  code: 200 ,\n  msg: 'ok',\n  res: {}\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "router/deleteOrder.js",
+    "groupTitle": "删除单号(准备弃用)",
+    "name": "PostDeleteorder"
   },
   {
     "type": "post",
@@ -264,6 +317,119 @@
     "filename": "router/getApkList.js",
     "groupTitle": "获取预约列表",
     "name": "GetGetapklist"
+  },
+  {
+    "type": "post",
+    "url": "/operationOrder",
+    "title": "",
+    "group": "订单操作",
+    "description": "<p>订单操作(同意、驳回、删除)</p>",
+    "version": "1.0.0",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "userId",
+            "description": "<p>用户id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "orderId",
+            "description": "<p>预约单号</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "operationType",
+            "description": "<p>操作类型 1 : 同意, 2: 驳回, 3: 删除</p>"
+          }
+        ]
+      }
+    },
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": ""
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": " {  \n  code: 200 ,\n  msg: 'ok',\n  res: {}\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "router/operationOrder.js",
+    "groupTitle": "订单操作",
+    "name": "PostOperationorder"
+  },
+  {
+    "type": "post",
+    "url": "/updataOrder",
+    "title": "",
+    "group": "预约单号驳回(准备弃用)",
+    "description": "<p>预约单号驳回( 驳回)</p>",
+    "version": "1.0.0",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "userId",
+            "description": "<p>用户id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "orderId",
+            "description": "<p>预约单号</p>"
+          }
+        ]
+      }
+    },
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": ""
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": " {  \n  code: 200 ,\n  msg: 'ok',\n  res: {}\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "router/updataOrder.js",
+    "groupTitle": "预约单号驳回(准备弃用)",
+    "name": "PostUpdataorder"
   },
   {
     "type": "post",

@@ -1,7 +1,7 @@
 
 /**
  * @api {post} /uploadPgyer
- * @apiGroup 上传蒲公英
+ * @apiGroup 上传蒲公英(准备弃用)
  * @apiDescription  上传蒲公英(同意按钮)
  * @apiVersion  1.0.0
  * 

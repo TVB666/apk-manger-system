@@ -26,13 +26,16 @@ global.db = mongoose.connect("mongodb://localhost:27017/apkManagerSystem", {
 var app = express()
 app.use(bodyParser.urlencoded({extended: false})) //解析表单数据需要用到的模块
 app.use(bodyParser.json())
-const getApkList = require('./router/getApkList')
-const home = require('./router/home')
-const login = require('./router/login')
-const orderVersion = require('./router/orderVersion')
-const uploadApk = require('./router/uploadApk')
-const bindingApk = require('./router/bindingApk')
-const uploadPgyer = require('./router/uploadPgyer')
+const getApkList = require('./router/getApkList') // 预约列表
+const home = require('./router/home') // 彩蛋
+const login = require('./router/login') // 登录
+const orderVersion = require('./router/orderVersion') // 预约版本
+const uploadApk = require('./router/uploadApk')  // 上传apk
+const bindingApk = require('./router/bindingApk') // 绑定apk
+const uploadPgyer = require('./router/uploadPgyer') // 上传蒲公英
+const deleteOrder = require('./router/deleteOrder') //删除订单
+const operationOrder = require('./router/operationOrder') //删除订单
+
 
 app.use('/', cors(), login)
 app.use('/', cors(), getApkList)
@@ -40,6 +43,8 @@ app.use('/', cors(), orderVersion)
 app.use('/', cors(), uploadApk)
 app.use('/', cors(), bindingApk)
 app.use('/', cors(), uploadPgyer)
+app.use('/', cors(), deleteOrder)
+app.use('/', cors(), operationOrder)
 app.use('/', cors(), home)
 
 app.listen('3000', function () {

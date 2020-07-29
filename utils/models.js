@@ -18,7 +18,7 @@ module.exports = {
     account: {type:String}, // 账户名
 	},
   ApkInfo:{
-    createdAt: {type: Number},
+    createdAt: {type: Date, default: Date.now(), index:{expireAfterSeconds: 20 }},
     userId: {type: Number, require: true},  //使用者
     userName: {type:String},
     version: {type:String, require: true}, // 预约版本

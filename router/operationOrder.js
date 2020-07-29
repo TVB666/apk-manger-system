@@ -86,8 +86,8 @@ router.post('/operationOrder', async function (req, res) {
 
 
     // 删除操作
-    if (type == 3) {
-      if (findOrderResult[1][0].userId != userId) { // 不是同一人
+    if (operationType == '3') {
+      if (findOrderResult[1].userId != userId) { // 不是同一人
         res.status(516).send(handleRes.handleRes(516, ''))
       } else {
         var whereStr = {
@@ -104,10 +104,10 @@ router.post('/operationOrder', async function (req, res) {
     }
 
     // 驳回操作
-    if (type == 2) {
+    if (operationType == '2') {
       if (userResult[1][0] < 1) { // 是否有权限操作
         res.status(516).send(handleRes.handleRes(516, ''))
-      } else if (findOrderResult[1][0].orderStatus != 2) { // 判断订单状态是否合法
+      } else if (findOrderResult[1].orderStatus != 2) { // 判断订单状态是否合法
         res.status(518).send(handleRes.handleRes(518, ''))
       } else {
         const updataObj = {
@@ -132,25 +132,25 @@ router.post('/operationOrder', async function (req, res) {
     }
 
     //  同意
-    if (type == 1) {
-      const fileUrl = findOrderResult[1][0].url
+    if (operationType == '1') {
+      const fileUrl = findOrderResult[1].url
       if (userResult[1][0] < 1) { // 是否有权限操作
         res.status(516).send(handleRes.handleRes(516, ''))
       } else if (!fs.existsSync(fileUrl)) { //判断路径文件是否存在
         res.status(513).send(handleRes.handleRes(513, ''))
-      } else if (findOrderResult[1][0].orderStatus != 2) { // 判断订单状态是否合法
+      } else if (findOrderResult[1].orderStatus != 2) { // 判断订单状态是否合法
         res.status(518).send(handleRes.handleRes(518, ''))
       } else {
         // 上传
         const updata = {
           _api_key: '85c5f75e243c4cf088e8b3462dfe561a',
           file: {
-            file: findOrderResult[1][0].url,
+            file: findOrderResult[1].url,
             content_type: 'multipart/form-data'
           },
           buildInstallType: 2,
           buildPassword: 'iot4',
-          buildUpdateDescription: findOrderResult[1][0].describe,
+          buildUpdateDescription: findOrderResult[1].describe,
           buildName: '格力+'
         }
         needle.post(pgyerUrl, updata, {
@@ -182,6 +182,7 @@ router.post('/operationOrder', async function (req, res) {
         res.end();
       }
     }
+
   } catch (error) {
     res.status(500).send(handleRes.handleRes(500, error))
     res.end();

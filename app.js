@@ -35,6 +35,7 @@ const bindingApk = require('./router/bindingApk') // 绑定apk
 const uploadPgyer = require('./router/uploadPgyer') // 上传蒲公英
 const deleteOrder = require('./router/deleteOrder') //删除订单
 const operationOrder = require('./router/operationOrder') //删除订单
+const downloadApk = require('./router/downloadApk') // 下载apk
 
 
 app.use('/', cors(), login)
@@ -45,6 +46,7 @@ app.use('/', cors(), bindingApk)
 app.use('/', cors(), uploadPgyer)
 app.use('/', cors(), deleteOrder)
 app.use('/', cors(), operationOrder)
+app.use('/', cors(), downloadApk)
 app.use('/', cors(), home)
 
 app.listen('3000', function () {

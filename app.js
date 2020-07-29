@@ -10,6 +10,15 @@ var express = require('express');
 const mongoose = require('mongoose');
 var cors = require('cors')
 var bodyParser = require('body-parser')
+var dayjs = require('dayjs')
+
+// 自定义log 带上时间输出
+console.oldlog = console.log;
+function log(){
+  process.stdout.write('\n'+ dayjs().format('YYYY-MM-DD HH:mm:ss') + ': ');
+  console.oldlog.apply(console, arguments);
+ }
+console.log = log;
 
 
 global.dbHandel = require('./utils/dbHandle');

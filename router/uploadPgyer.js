@@ -122,7 +122,7 @@ router.post('/uploadPgyer', async function (req, res) {
         ApkModel.updateOne(whatUpdate, setObj).then(res => resolve([null, res])).catch(err => reject([err, null]))
       })
       if(apkResult[0]) throw err
-      res.status(200).send(handleRes.handleRes(200, apkResult[1][0]))
+      res.status(200).send(handleRes.handleRes(200, apkResult[1]))
       res.end();
       // you can pass params as a string or as an object.
     });

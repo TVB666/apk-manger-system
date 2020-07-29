@@ -89,7 +89,7 @@ router.post('/bindingApk', async function (req, res) {
     const apkObj = {
       overTime: new Date().getTime() +  1000 * 60 * 60 * 24 * 3, // 超期时间
       uploadTime: new Date().getTime(),
-      orderStatus: 3,
+      orderStatus: 2,
       url,
       describe
     }

@@ -73,7 +73,7 @@ router.post('/orderVersion', async function (req, res) {
       ApkModel.find({version, platformType}).then(res => resolve([null ,res])).catch(err => reject([err, null]))
     })
     try {
-      ApkModel.createIndexes({ "createdAt": 1 }, { expireAfterSeconds: 20 } )
+      // ApkModel.createIndexes({ createdAt: 1 }, { expireAfterSeconds: 10 } )
     } catch (error) {
       console.log('-------',error);
     }
@@ -82,7 +82,7 @@ router.post('/orderVersion', async function (req, res) {
       console.log('--锁定版本--'); // 锁定版本
       const orderId  = await global.dbHandel.getNextSequenceValue('orderId')   
       const writeObj = {
-        createdAt: new Date(),
+        // createdAt: new Date(),
         userId,
         userName: userResult[1][0].userName,
         createTime: new Date().getTime(), // 生成时间

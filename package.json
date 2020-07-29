@@ -8,16 +8,17 @@
     "url": "https://api.github.com/v1"
   },
   "scripts": {
-    "serve" : "node app.js",
-    "apiserve": "", 
-    "apidoc" : "apidoc -i router/ -o apidoc/ && cd apidoc && http-server ./",
+    "serve": "node app.js",
+    "apiserve": "",
+    "apidoc": "apidoc -i router/ -o apidoc/ && cd apidoc && http-server ./",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "LZM",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",
-    "cors": "^2.8.5", 
+    "cors": "^2.8.5",
+    "dayjs": "^1.8.31",
     "express": "^4.17.1",
     "formidable": "^1.2.2",
     "fs": "^0.0.1-security",

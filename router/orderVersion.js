@@ -86,7 +86,7 @@ router.post('/orderVersion', async function (req, res) {
         userId,
         userName: userResult[1][0].userName,
         createTime: new Date().getTime(), // 生成时间
-        overTime: new Date().getTime() + 1000 * 60 * 60 * 24 * 3, // 超期时间
+        overTime: new Date().getTime() + 1000 * 60 * 20, // 超期时间
         orderStatus: 1, // 状态
         platformType, // 平台
         version,

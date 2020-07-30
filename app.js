@@ -43,7 +43,7 @@ const uploadApk = require('./router/uploadApk')  // 上传apk
 const bindingApk = require('./router/bindingApk') // 绑定apk
 const uploadPgyer = require('./router/uploadPgyer') // 上传蒲公英
 const deleteOrder = require('./router/deleteOrder') //删除订单
-const operationOrder = require('./router/operationOrder') //删除订单
+const operationOrder = require('./router/operationOrder') //订单操作
 const downloadApk = require('./router/downloadApk') // 下载apk
 
 

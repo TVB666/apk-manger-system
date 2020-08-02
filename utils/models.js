@@ -23,7 +23,7 @@ module.exports = {
     userName: {type:String},
     version: {type:String, require: true}, // 预约版本
     describe: {type: String}, // 描述
-    createTime: { type: Date, default: Date.now }, // 订单创建时间
+    createTime: { type: Date, default: Date.now }, // 预约创建时间
     fixTime: {type: Date}, // 修改时间
     overTime: {type: Date}, // 超期时间
     uploadTime: {type: Date}, // 文件上传时间

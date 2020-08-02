@@ -56,7 +56,7 @@ router.post('/deleteOrder', async function(req,res){
       return;
     } 
 
-      // 找订单号
+      // 找预约号
     const ApkModel = global.dbHandel.getModel('ApkInfo');
     const findOrderResult = await new Promise((resolve, reject) => {
       ApkModel.find({orderId: orderId >> 0}).then(res => resolve([null ,res])).catch(err => reject([err, null]))

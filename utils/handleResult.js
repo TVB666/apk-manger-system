@@ -20,9 +20,9 @@ const codeObj = {
   514: '该版本已被他人使用',
   515: '请求参数缺失',
   516: '无权限操作',
-  517: '该订单不存在',
+  517: '该预约号不存在',
   518: '该单号非审批状态',
-  519: '取消了下载或服务器异常'
+  519: '取消了下载或服务器异常',
 }
 
 // 列表状态
@@ -31,7 +31,9 @@ const orderStatus = {
   1: '预约使用中',
   2: '待审核',
   3: '待修改',
-  4: '已完成'
+  4: '已完成',
+  5: '上传中',
+  6: '上传失败'
 }
 
 // 订单操作类型
@@ -39,7 +41,7 @@ const operationType = {
   1: "同意",
   2: '驳回',
   3: '删除',
-  4: '下载'
+  // 4: '下载'
 }
 
 // 平台
@@ -50,6 +52,9 @@ const platformType = {
 
 // 返回的数据处理
 function handleRes(code, res) {
+  if(code === 500){
+    console.log('--error--', res);
+  }
   const obj = {
     code,
     msg: codeObj[code],
@@ -62,5 +67,6 @@ function handleRes(code, res) {
 
 module.exports = {
   handleRes,
-  codeObj
+  codeObj,
+  platformType
 }

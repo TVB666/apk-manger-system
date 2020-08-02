@@ -40,7 +40,7 @@
             platformType:0,  //  0: '格力+',  1: 'Gree+'
             url:"uploads\2020-7-24\Greeplus_In_4.0.0.20_202007248.apk",
             checkerId:null, // 审批人
-            orderId:15 //订单id
+            orderId:15 //预约id
  *        }],
  *        page: 页码,
  *        limit: 每页限制

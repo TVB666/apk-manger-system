@@ -56,13 +56,13 @@ router.post('/deleteOrder', async function(req,res){
       return;
     } 
 
-      // 找订单号
+      // 找预约号
     const ApkModel = global.dbHandel.getModel('ApkInfo');
     const findOrderResult = await new Promise((resolve, reject) => {
       ApkModel.find({orderId: orderId >> 0}).then(res => resolve([null ,res])).catch(err => reject([err, null]))
     })
     if(findOrderResult[0]) throw err
-    if(findOrderResult[1].length === 0){ // 订单是否存在
+    if(findOrderResult[1].length === 0){ // 预约号是否存在
       res.status(517).send(handleRes.handleRes(517, ''))
     } else if(findOrderResult[1][0].userId != userId ) { // 不是同一人
       res.status(516).send(handleRes.handleRes(516, ''))

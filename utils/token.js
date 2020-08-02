@@ -46,6 +46,6 @@ function verifyToken(token){
   }
   return result
 }
-module.exports = {
+export {
   createToken,verifyToken
 }

@@ -1,16 +1,11 @@
-/*
- * @Descripttion: 启动后端
- * @version: 1.1
- * @Author: ZM_lee└(^o^)┘
- * @Date: 2020-07-13 22:16:16
- * @LastEditors: ZM_lee└(^o^)┘
- * @LastEditTime: 2020-07-27 11:10:06
- */
-var express = require('express');
-const mongoose = require('mongoose');
-var cors = require('cors')
-var bodyParser = require('body-parser')
-var dayjs = require('dayjs')
+import express from 'express';
+import bodyParser from 'body-parser'
+import dayjs from  'dayjs';
+import config from 'config-lite';   // 配置 && 代码分离
+import history from 'connect-history-api-fallback';
+import router from './router/index.js';
+import chalk from 'chalk'
+import db from './mongodb/db.js';
 
 // 自定义log 带上时间输出
 console.oldlog = console.log;
@@ -21,45 +16,33 @@ function log(){
 console.log = log;
 
 
-global.dbHandel = require('./utils/dbHandle');
-global.db = mongoose.connect("mongodb://localhost:27017/apkManagerSystem", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  })
-  .then(res => {console.log('数据库连接成功')})
-  .catch(err => {console.error('数据库连接失败')})
-
-
+const app = express()
+app.all('*', (req, res, next) => {
+  const { origin, Origin, referer, Referer } = req.headers;
+  const allowOrigin = origin || Origin || referer || Referer || '*';
+	res.header("Access-Control-Allow-Origin", allowOrigin);
+	res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
+	res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
+  res.header("Access-Control-Allow-Credentials", true); //可以带cookies
+	res.header("X-Powered-By", 'Express');
+	if (req.method == 'OPTIONS') {
+  	res.sendStatus(200);
+	} else {
+    next();
+	}
+});
 
 //声明后端接口的访问路由
-var app = express()
+
+router(app);
+
 app.use(bodyParser.urlencoded({extended: false})) //解析表单数据需要用到的模块
 app.use(bodyParser.json())
-const getApkList = require('./router/getApkList') // 预约列表
-const home = require('./router/home') // 彩蛋
-const login = require('./router/login') // 登录
-const orderVersion = require('./router/orderVersion') // 预约版本
-const uploadApk = require('./router/uploadApk')  // 上传apk
-const bindingApk = require('./router/bindingApk') // 绑定apk
-const uploadPgyer = require('./router/uploadPgyer') // 上传蒲公英
-const deleteOrder = require('./router/deleteOrder') //删除预约
-const operationOrder = require('./router/operationOrder') //预约操作
-const downloadApk = require('./router/downloadApk') // 下载apk
+app.use(history());
+// app.use(express.static('./public')); 前端打包后丢这个文件夹
+app.listen(config.port, () => {
+	console.log(
+		chalk.green(`成功监听端口：${config.port}`)
+	)
+});
 
-
-app.use('/', cors(), login)
-app.use('/', cors(), getApkList)
-app.use('/', cors(), orderVersion)
-app.use('/', cors(), uploadApk)
-app.use('/', cors(), bindingApk)
-app.use('/', cors(), uploadPgyer)
-app.use('/', cors(), deleteOrder)
-app.use('/', cors(), operationOrder)
-app.use('/', cors(), downloadApk)
-app.use('/', cors(), home)
-
-app.listen('3000', function () {
-  console.log('开启了服务');
-})
-
-module.exports = app;

@@ -52,7 +52,7 @@ const platformType = {
 
 // 返回的数据处理
 function handleRes(code, res) {
-  if(code === 500){
+  if (code === 500) {
     console.log('--error--', res);
   }
   const obj = {
@@ -65,7 +65,7 @@ function handleRes(code, res) {
 
 
 
-module.exports = {
+export {
   handleRes,
   codeObj,
   platformType

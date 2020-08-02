@@ -1,26 +1,4 @@
-/**
- * @api {post} /login
- * @apiGroup 登录
- * @apiDescription  登陆接口
- * @apiVersion  1.0.0
- * 
- * @apiParam {String} account 用户名 eg: '560666'
- * @apiParam {String} psw 密码 两重MD5 eg: '123456'
- * 
- * @apiSuccessExample {json} Success-Response:
- *   {  
- *    code: 200 ,
- *    msg: 'ok',
- *    res: {
- *       "token": "abcdefghijk",
- *       "userId": 1111111,
- *       "userName": "张三"
- *       "account" : "账号",
- *        "manager" :  0, // 管理权限 0 普通会员 1 管理员 2 超级管理员
- *    }
- *  }
- */
-var { checkToken , createToken } = require("../utils/token")
+
 
 var express = require("express");
 var md5 = require("js-md5");

@@ -4,6 +4,6 @@ import express from 'express'
 import UserComponent from '../prototype/userBase'
 const router = express.Router()
 
-router.post('/login', UserComponent.login);
+router.post('', UserComponent.login);
 
 export default router

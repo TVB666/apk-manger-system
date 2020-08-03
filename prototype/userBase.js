@@ -15,9 +15,14 @@ class UserComponent extends BaseDao {
     } = req.body
     if (!account || !psw) {
       res.status(515).send(this.handleRes(515))
+      res.end()
       return;
     }
-    const admin = await UserModel.findOne({account})
+    const aa = `${account}` 
+    console.log('-account--------------', aa);
+    const admin = await UserModel.findOne({"account": aa})
+    console.log('----admin----', admin );
+    
     if (!admin) {
       res.status(510).send(this.handleRes(510))
       return

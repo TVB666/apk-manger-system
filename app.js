@@ -1,22 +1,27 @@
 import express from 'express';
 import bodyParser from 'body-parser'
 import dayjs from  'dayjs';
-import config from 'config-lite';   // 配置 && 代码分离
 import history from 'connect-history-api-fallback';
 import router from './router/index.js';
 import chalk from 'chalk'
 import db from './mongodb/db.js';
+const config = require('config-lite')(__dirname);   // 配置 && 代码分离
 
 // 自定义log 带上时间输出
 console.oldlog = console.log;
 function log(){
   process.stdout.write('\n'+ dayjs().format('YYYY-MM-DD HH:mm:ss') + ': ');
   console.oldlog.apply(console, arguments);
- }
+}
 console.log = log;
 
 
+
 const app = express()
+app.use(bodyParser.urlencoded({extended: false})) //解析表单数据需要用到的模块
+app.use(bodyParser.json())
+app.use(history());
+
 app.all('*', (req, res, next) => {
   const { origin, Origin, referer, Referer } = req.headers;
   const allowOrigin = origin || Origin || referer || Referer || '*';
@@ -36,9 +41,6 @@ app.all('*', (req, res, next) => {
 
 router(app);
 
-app.use(bodyParser.urlencoded({extended: false})) //解析表单数据需要用到的模块
-app.use(bodyParser.json())
-app.use(history());
 // app.use(express.static('./public')); 前端打包后丢这个文件夹
 app.listen(config.port, () => {
 	console.log(

@@ -1,10 +1,13 @@
 'use strict';
 
 import mongoose from 'mongoose';
-import config from 'config-lite';
 import chalk from 'chalk';
+const config = require('config-lite')(__dirname);
+
+console.log('--------config---------', config.url);
+
+// FuseMongoClient: true,
 mongoose.connect(config.url, {
-  FuseMongoClient: true,
   useNewUrlParser: true,
   useUnifiedTopology: true
 });

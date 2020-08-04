@@ -78,7 +78,7 @@ router.post('/operationOrder', async function (req, res) {
       }).then(res => resolve([null, res])).catch(err => reject([err, null]))
     })
     if (findOrderResult[0]) throw err
-    if (findOrderResult[1].length === 0) { // 订单是否存在
+    if (!findOrderResult[1]) { // 订单是否存在
       res.status(517).send(handleRes.handleRes(517, ''))
       res.end()
       return;
@@ -87,7 +87,7 @@ router.post('/operationOrder', async function (req, res) {
 
     // 删除操作
     if (operationType == '3') {
-      if (findOrderResult[1].userId != userId) { // 不是同一人
+      if (findOrderResult[1].userId != userId && findOrderResult[1].manager > 0) { // 不是同一人
         res.status(516).send(handleRes.handleRes(516, ''))
       } else {
         var whereStr = {
@@ -136,7 +136,7 @@ router.post('/operationOrder', async function (req, res) {
       const fileUrl = findOrderResult[1].url
       if (userResult[1][0] < 1) { // 是否有权限操作
         res.status(516).send(handleRes.handleRes(516, ''))
-      } else if (findOrderResult[1].orderStatus != 2 || findOrderResult[1].orderStatus != 3) { // 判断订单状态是否合法
+      } else if (findOrderResult[1].orderStatus != 2 && findOrderResult[1].orderStatus != 3) { // 判断订单状态是否合法
         res.status(518).send(handleRes.handleRes(518, ''))
       } else if (!fs.existsSync(fileUrl)) { //判断路径文件是否存在
         res.status(513).send(handleRes.handleRes(513, ''))
@@ -157,7 +157,8 @@ router.post('/operationOrder', async function (req, res) {
           ApkModel.updateOne(whatUpdate, beforeSetObj).then(res => resolve([null, res])).catch(err => reject([err, null]))
         })
         if (beforeApkResult[0]) throw err
-
+        res.status(200).send(handleRes.handleRes(200, beforeApkResult[1]))
+        res.end()
         // 上传
         const updata = {
           _api_key: '85c5f75e243c4cf088e8b3462dfe561a',
@@ -168,7 +169,7 @@ router.post('/operationOrder', async function (req, res) {
           buildInstallType: 2,
           buildPassword: 'iot4', //TODO读数据库
           buildUpdateDescription: findOrderResult[1].describe,
-          buildName: handleRes.platformType[findOrderResult[1][0].platformType] //平台
+          buildName: handleRes.platformType[findOrderResult[1].platformType] //平台
         }
         needle.post(pgyerUrl, updata, {
           multipart: true
@@ -197,10 +198,6 @@ router.post('/operationOrder', async function (req, res) {
           const apkResult = await new Promise((resolve, reject) => {
             ApkModel.updateOne(whatUpdate, setObj).then(res => resolve([null, res])).catch(err => reject([err, null]))
           })
-          if (apkResult[0]) throw apkResult[0]
-          if (err) throw err
-
-          res.status(200).send(handleRes.handleRes(200, apkResult[1]))
           // you can pass params as a string or as an object.
         });
         res.end();

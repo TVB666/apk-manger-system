@@ -23,17 +23,17 @@ MongoClient.connect(url, {
   // });
 
   // 写入数据C 连接哭 collection 单条 insertOne  多条 insertMany  
-  var useObj = [
-    {userName: 'adminnnn', userId: 10086666, psw: "14e1b600b1fd579f47433b88e8d85291", creatTime: new Date(), manager: 0 },
-  ]
+  // var useObj = [
+  //   {userName: 'adminnnn', userId: 10086666, psw: "14e1b600b1fd579f47433b88e8d85291", creatTime: new Date(), manager: 0 },
+  // ]
   
-    // var useObj = [
-    //   // {account: '560777', userName: '管理员小德', userId: 201, psw: md5(md5('345678')), creatTime: new Date().getTime(), manager: 1 , checkerId: 1},
-    //   // {account: '560888', userName: '超级管理员null', userId: 1, psw: md5(md5('060100')), creatTime: new Date().getTime(), manager: 2 , checkerId: 0},
-    //   {account: '560182', userName: '志恒', userId: 202, psw: md5(md5('123456')), creatTime: new Date().getTime(), manager: 1 , checkerId: 1},
-    // ]
-    dbBase.collection("test").createIndex({"creatTime": 1},{expireAfterSeconds: 10})
-    dbBase.collection("test").insertMany(useObj, function(err, res){
+    var useObj = [
+      // {account: '560777', userName: '管理员小德', userId: 201, psw: md5(md5('345678')), creatTime: new Date().getTime(), manager: 1 , checkerId: 1},
+      // {account: '560888', userName: '超级管理员null', userId: 1, psw: md5(md5('060100')), creatTime: new Date().getTime(), manager: 2 , checkerId: 0},
+      {account: '560184', userName: '朤朤', userId: 203, psw: md5(md5('@WSX3edc')), creatTime: new Date().getTime(), manager: 2 , checkerId: 1},
+    ]
+    // dbBase.collection("test").createIndex({"creatTime": 1},{expireAfterSeconds: 10})
+    dbBase.collection("user").insertMany(useObj, function(err, res){
       if(err) throw err
       console.log('插入成功');
       db.close

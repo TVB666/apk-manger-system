@@ -11,7 +11,8 @@
     "serve": "cross-env NODE_ENV=development nodemon --harmony index.js",
     "apiserve": "",
     "apidoc": "apidoc -i router/ -o apidoc/ && cd apidoc && http-server ./",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "pm2 deploy production"
   },
   "author": "LZM",
   "license": "ISC",

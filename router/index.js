@@ -1,10 +1,8 @@
 'use strict';
 import admin from './admin'
+import orderList from './orderList' 
 
 
-// import getApkList from './router/getApkList' // 预约列表
-// import home from './router/home' // 彩蛋
-// import login from './router/login' // 登录
 // import orderVersion from './router/orderVersion' // 预约版本
 // import uploadApk from './router/uploadApk'  // 上传apk
 // import bindingApk from './router/bindingApk' // 绑定apk
@@ -15,8 +13,9 @@ import admin from './admin'
 
 
 export default app => {
-  app.use('/login', admin);
-  // app.use('/getApkList', getApkList);
+  app.use('/admin', admin);
+  app.use('/orderList', orderList);
+  
   // app.use('/orderVersion', orderVersion);
   // app.use('/uploadApk', uploadApk);
   // app.use('/bindingApk', bindingApk);

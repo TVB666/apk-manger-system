@@ -1,5 +1,5 @@
 import {
-  checkToken as chToken,
+  verifyToken as chToken,
   createToken as crToken
 } from "../utils/token"
 import { codeObj } from  '../utils/handleResult'
@@ -182,12 +182,12 @@ export default class BaseDao {
   }
 
 
-  checkToken() {
-    return chToken();
+  checkToken(token) {
+    return chToken(token);
   }
 
-  createToken() {
-    return crToken();
+  createToken(obj) {
+    return crToken(obj);
   }
 
 

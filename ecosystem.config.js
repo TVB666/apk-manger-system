@@ -6,13 +6,13 @@ module.exports = {
     autorestart: true,
     watch: false,
     max_memory_restart: '1G',
-    output: 'logs/out.log',
-    error: 'logs/error.log',
-    log: 'logs/combined.outerr.log',
+    output: './logs/out.log',
+    error: './logs/error.log',
+    log: './logs/combined.outerr.log',
     env: {
       NODE_ENV: 'development',
       HOST: '0.0.0.0',
-      PORT: 3000,
+      PORT: 3001,
     },
     env_production: {
       NODE_ENV: 'production',

@@ -30,7 +30,7 @@ MongoClient.connect(url, {
     var useObj = [
       // {account: '560777', userName: '管理员小德', userId: 201, psw: md5(md5('345678')), creatTime: new Date().getTime(), manager: 1 , checkerId: 1},
       // {account: '560888', userName: '超级管理员null', userId: 1, psw: md5(md5('060100')), creatTime: new Date().getTime(), manager: 2 , checkerId: 0},
-      {account: '560184', userName: '朤朤', userId: 203, psw: md5(md5('@WSX3edc')), creatTime: new Date().getTime(), manager: 2 , checkerId: 1},
+      {account: '111222', userName: '文中', userId: 204, psw: md5(md5('aaabbb')), creatTime: new Date().getTime(), manager: 1 , checkerId: 1},
     ]
     // dbBase.collection("test").createIndex({"creatTime": 1},{expireAfterSeconds: 10})
     dbBase.collection("user").insertMany(useObj, function(err, res){

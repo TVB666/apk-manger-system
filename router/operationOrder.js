@@ -63,6 +63,7 @@ router.post('/operationOrder', async function (req, res) {
         userId: userId >> 0
       }).then(res => resolve([null, res])).catch(err => reject([err, null]))
     })
+    console.log('----------userResult------', userResult);
     if (userResult[0]) throw err
     if (userResult[1].length === 0) { // 用户名不存在
       res.status(510).send(handleRes.handleRes(510, ''))
@@ -77,6 +78,7 @@ router.post('/operationOrder', async function (req, res) {
         orderId: orderId >> 0
       }).then(res => resolve([null, res])).catch(err => reject([err, null]))
     })
+    console.log('-----findOrderResult----', findOrderResult);
     if (findOrderResult[0]) throw err
     if (!findOrderResult[1]) { // 订单是否存在
       res.status(517).send(handleRes.handleRes(517, ''))
@@ -105,7 +107,7 @@ router.post('/operationOrder', async function (req, res) {
 
     // 驳回操作
     if (operationType == '2') {
-      if (userResult[1][0] < 1) { // 是否有权限操作
+      if (userResult[1].manager < 1) { // 是否有权限操作
         res.status(516).send(handleRes.handleRes(516, ''))
       } else if (findOrderResult[1].orderStatus != 2) { // 判断订单状态是否合法
         res.status(518).send(handleRes.handleRes(518, ''))
@@ -134,7 +136,7 @@ router.post('/operationOrder', async function (req, res) {
     //  同意
     if (operationType == '1') {
       const fileUrl = findOrderResult[1].url
-      if (userResult[1][0] < 1) { // 是否有权限操作
+      if (userResult[1].manager < 1) { // 是否有权限操作
         res.status(516).send(handleRes.handleRes(516, ''))
       } else if (findOrderResult[1].orderStatus != 2 && findOrderResult[1].orderStatus != 3) { // 判断订单状态是否合法
         res.status(518).send(handleRes.handleRes(518, ''))
@@ -161,7 +163,8 @@ router.post('/operationOrder', async function (req, res) {
         res.end()
         // 上传
         const updata = {
-          _api_key: '85c5f75e243c4cf088e8b3462dfe561a',
+          // _api_key: 'f6214162182b85f2ef95eeb1e79c4c6a', // 鹏鹏的
+          _api_key: '85c5f75e243c4cf088e8b3462dfe561a', // 我的
           file: {
             file: findOrderResult[1].url,
             content_type: 'multipart/form-data'

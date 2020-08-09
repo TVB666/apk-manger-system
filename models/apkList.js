@@ -1,7 +1,7 @@
 'use strict'
 
 import mongoose from 'mongoose'
-
+mongoose.set('useFindAndModify', false)
 const Schema = mongoose.Schema
 
 const apkListSchema = new Schema({

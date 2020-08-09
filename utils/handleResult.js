@@ -51,7 +51,7 @@ const platformType = {
 }
 
 // 返回的数据处理
-function handleRes(code, res) {
+function handleRes(code, res = '') {
   if (code === 500) {
     console.log('--error--', res);
   }

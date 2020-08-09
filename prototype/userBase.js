@@ -1,5 +1,5 @@
 import BaseDao from './BaseDao'
-import User from '../models/user'
+import UserSchema from '../models/user'
 
 class UserComponent extends BaseDao {
   constructor() {
@@ -20,7 +20,7 @@ class UserComponent extends BaseDao {
       return;
     }
 
-    const admin = await User.findOne({account})
+    const admin = await UserSchema.findOne({account})
     if (!admin) {
       res.status(510).send(this.handleRes(510))
       return

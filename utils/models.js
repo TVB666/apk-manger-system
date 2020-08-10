@@ -34,6 +34,7 @@ module.exports = {
     platformType:{type:Number}, // 平台
     url: {type:String}, // 文件路径
     checkerId: {type:Number}, // 审批人
+    buildName:{type:String}
   },
   idSequence: {
     id_key: {type:String, require: true},  // 查询id 的唯一key值

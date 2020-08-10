@@ -50,9 +50,10 @@ router.post('/bindingApk', async function (req, res) {
     url,
     version,
     platformType,
-    describe
+    describe,
+    buildName
   } = req.body
-  if(!(userId && version && platformType && url && describe)){
+  if(!(userId && version && platformType && url && describe && buildName)){
     res.status(515).send(handleRes.handleRes(515, ''))
     res.end()
     return;
@@ -94,7 +95,8 @@ router.post('/bindingApk', async function (req, res) {
         uploadTime: new Date().getTime(),
         orderStatus: 2,
         url,
-        describe
+        describe,
+        buildName
       }
       const setObj = { $set: apkObj }
       const whatUpdate = {orderId: verResult[1][0].orderId >> 0}
@@ -119,6 +121,7 @@ router.post('/bindingApk', async function (req, res) {
         url,
         describe,
         orderId: orderId >> 0,
+        buildName,
       }
       const writeResult = await new Promise((resolve, reject) => {
         ApkModel.insertMany(writeObj).then(res => resolve([null ,res])).catch(err => reject([err, null]))

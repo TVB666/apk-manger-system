@@ -89,7 +89,7 @@ router.post('/operationOrder', async function (req, res) {
 
     // 删除操作
     if (operationType == '3') {
-      if (findOrderResult[1].userId != userId && findOrderResult[1].manager > 0) { // 不是同一人
+      if (findOrderResult[1].userId != userId && (Number(userResult[1].manager) <= 1)) { // 不是同一人
         res.status(516).send(handleRes.handleRes(516, ''))
       } else {
         var whereStr = {
@@ -163,16 +163,16 @@ router.post('/operationOrder', async function (req, res) {
         res.end()
         // 上传
         const updata = {
-          // _api_key: 'f6214162182b85f2ef95eeb1e79c4c6a', // 鹏鹏的
-          _api_key: '85c5f75e243c4cf088e8b3462dfe561a', // 我的
+          _api_key: 'f6214162182b85f2ef95eeb1e79c4c6a', // 鹏鹏的
+          // _api_key: '85c5f75e243c4cf088e8b3462dfe561a', // 我的
           file: {
             file: findOrderResult[1].url,
             content_type: 'multipart/form-data'
           },
           buildInstallType: 2,
-          buildPassword: 'iot4', //TODO读数据库
+          buildPassword: 'qwe!23', //TODO读数据库
           buildUpdateDescription: findOrderResult[1].describe,
-          buildName: handleRes.platformType[findOrderResult[1].platformType] //平台
+          buildName: findOrderResult[1].buildName 
         }
         needle.post(pgyerUrl, updata, {
           multipart: true

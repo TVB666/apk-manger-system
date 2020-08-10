@@ -70,7 +70,7 @@ router.get("/getApkList", async function (req, res) {
     })
     
     if (apkResult[0]) throw err;
-    const apkList = apkResult[1]
+    const apkList = apkResult[1].reverse()
     const length = apkList.length
     if (JSON.stringify(req.query) == '{}') {
       const result = {

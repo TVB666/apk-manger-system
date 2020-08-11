@@ -65,7 +65,7 @@ function handleRes(code, res = '') {
 
 
 
-module.exports = {
+export {
   handleRes,
   codeObj,
   platformType

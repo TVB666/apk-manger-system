@@ -5,13 +5,19 @@ import ApkListSchema from '../models/apkList'
 import UserSchema from '../models/user'
 import IdSequenceSchema from '../models/idSequence'
 var fs = require('fs');
-
+var needle = require('needle');
+const pgyerUrl = 'https://www.pgyer.com/apiv2/app/upload'
 class ApkListComponent extends BaseDao {
   constructor() {
     super();
     this.getList = this.getList.bind(this);
     this.hasCorrectToken = this.hasCorrectToken.bind(this);
     this.appointment = this.appointment.bind(this);
+    this.operationOrder = this.operationOrder.bind(this);
+    this.bindingApk = this.bindingApk.bind(this);
+    this.downloadApk = this.downloadApk.bind(this);
+    this.getNextSequenceValue = this.getNextSequenceValue.bind(this);
+    
   }
   
   // 校验token
@@ -19,7 +25,7 @@ class ApkListComponent extends BaseDao {
     const token = req.headers.token
     const tokenResult = this.checkToken(token)
     if (!tokenResult.success) {
-      res.status(501).send(this.handleRes(501, ''))
+      res.status(501).send(this.handleRes(501))
       res.end();
       return;
     }
@@ -33,7 +39,8 @@ class ApkListComponent extends BaseDao {
     const tokenRes = this.hasCorrectToken(req, res)
     if (!tokenRes) return
 
-    const apkList = await ApkListSchema.find().reverse()
+    let apkList = await ApkListSchema.find()
+    apkList = apkList.reverse()
     const length = apkList.length
     let {
       page = 1,
@@ -57,11 +64,10 @@ class ApkListComponent extends BaseDao {
 
   // 预约版本 
   async appointment(req, res, next) {
+    console.log('-----appointment---------', req.body);
 
     const tokenRes = this.hasCorrectToken(req, res)
     if (!tokenRes) return
-
-    console.log('-----appointment---------', req.body);
 
     let {
       userId = null,
@@ -116,11 +122,13 @@ class ApkListComponent extends BaseDao {
 
   // 绑定版本&&apk
   async bindingApk(req, res, next){
+    console.log('-------------', req.headers.token);
+    
     const tokenRes = this.hasCorrectToken(req, res)
     if (!tokenRes) return
 
     console.log('-----bindingApk---------', req.body);
-    
+
     const {
       userId,
       url,
@@ -192,7 +200,7 @@ class ApkListComponent extends BaseDao {
         }
         const writeResult = await ApkListSchema.insertMany(writeObj)
         if(!writeResult) throw err
-        res.status(200).send(this.handleRes(200, writeResult[1][0])) // ok
+        res.status(200).send(this.handleRes(200, writeResult)) // ok
       }
     }
     res.end()
@@ -201,10 +209,10 @@ class ApkListComponent extends BaseDao {
 
   // 订单操作 1 : 同意, 2: 驳回, 3: 删除
   async operationOrder(req, res, next){
+    console.log('-----operationOrder---------', req.body);
 
     const tokenRes = this.hasCorrectToken(req, res)
     if (!tokenRes) return
-
       // 检验必传参数
       let {
         userId,
@@ -281,7 +289,7 @@ class ApkListComponent extends BaseDao {
       const fileUrl = orderIdList.url
       if (userData.manager < 1) { // 是否有权限操作
         res.status(516).send(this.handleRes(516))
-      } else if (orderIdList.orderStatus != 2 || orderIdList.orderStatus != 3) { // 判断订单状态是否合法
+      } else if (orderIdList.orderStatus != 2 && orderIdList.orderStatus != 3) { // 判断订单状态是否合法
         res.status(518).send(this.handleRes(518))
       } else if (!fs.existsSync(fileUrl)) { //判断路径文件是否存在
         res.status(513).send(this.handleRes(513))
@@ -344,7 +352,7 @@ class ApkListComponent extends BaseDao {
           if (!apkResult) throw apkResult
           if (err) throw err
 
-          res.status(200).send(handleRes.handleRes(200, apkResult[1]))
+          res.status(200).send(this.handleRes(200, apkResult))
           // you can pass params as a string or as an object.
         });
         res.end();

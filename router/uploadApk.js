@@ -14,6 +14,12 @@ import { handleRes } from '../utils/handleResult'
 //     fs.mkdirSync(folder);
 //   }
 // };
+var limits = {
+  //限制文件大小10kb
+  // fileSize: 10*1000,
+  //限制文件数量
+  files: 1
+}
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -27,24 +33,41 @@ var storage = multer.diskStorage({
   },
   filename: function (req, file, cb) { // 在这里设定文件名
       cb(null, file.originalname);
-  }})
+  }
+})
 
-var upload = multer({ storage: storage })
-var uploadfile = upload.array('file')
+var fileFilter = function(req, file, cb) {
+   // 限制文件上传类型
+  if(file.mimetype == 'application/vnd.android.package-archive'){
+    cb(null, true)
+  } else {
+    cb(null, false)
+  }
+}
+
+var upload = multer({limits, storage, fileFilter})
+var uploadfileSingle = upload.array('file')
 
 const uploadApk = function(req, res){
-  console.log('---/uploadApk----', req.files)
-  
-  if (!req.files || Object.keys(req.files).length === 0) { // 没有文件
-    res.status(400).send(handleRes(400, ''));
-  } else {
-    const resultObj = {
-      url: req.files[0].path,
-      size: req.files[0].size
+  console.log('---/uploadApk----')
+  uploadfileSingle(req, res, (err) => {
+    if(err){
+      res.status(521).send(handleRes(521, 'err'))
+      return
     }
-    res.status(200).send(handleRes(200, resultObj))
-  }
-  res.end();
+    console.log('req.files', req.files);
+    if (!req.files || Object.keys(req.files).length === 0) { // 没有文件
+      res.status(400).send(handleRes(400));
+    } else {
+      const resultObj = {
+        url: req.files[0].path,
+        size: req.files[0].size
+      }
+      res.status(200).send(handleRes(200, resultObj))
+    }
+    res.end();
+  })
+
   // console.log('req', req.file);
   // console.log('------upload-----');
   // console.log(req.body);
@@ -56,7 +79,4 @@ const uploadApk = function(req, res){
   // console.log('文件保存路径：%s', file.path);
 }
 
-export {
- uploadfile,
- uploadApk
-}
+export default uploadApk

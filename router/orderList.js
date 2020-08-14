@@ -3,7 +3,7 @@
 // 列表相关操作
 import express from 'express'
 import ApkListComponent from '../prototype/apkListBase'
-import { uploadfile , uploadApk } from './uploadApk'  // 上传apk
+import uploadApk from './uploadApk'  // 上传apk
 
 const router = express.Router()
 
@@ -12,7 +12,7 @@ router.post('/appointment', ApkListComponent.appointment); //预约版本
 router.post('/bindingApk', ApkListComponent.bindingApk); // 绑定版本&&apk
 router.post('/operationOrder', ApkListComponent.operationOrder); // 订单操作
 router.get('/downloadApk', ApkListComponent.downloadApk); // 下载操作
-router.post('/uploadApk', uploadfile, uploadApk); //上传apk
+router.post('/uploadApk', uploadApk ); //上传apk
 
 
 export default router

@@ -10,6 +10,13 @@ var MongoClient = require("mongodb").MongoClient
 var url = "mongodb://127.0.0.1:27017"
 var md5 = require("js-md5");
 
+function RandomNumBoth(Min = 100000,Max = 999999){
+  var Range = Max - Min;
+  var Rand = Math.random();
+  var num = Min + Math.round(Rand * Range); //四舍五入
+  return num;
+}
+
 MongoClient.connect(url, {
   useUnifiedTopology: true
 }, function (err, db) {
@@ -26,11 +33,19 @@ MongoClient.connect(url, {
   // var useObj = [
   //   {userName: 'adminnnn', userId: 10086666, psw: "14e1b600b1fd579f47433b88e8d85291", creatTime: new Date(), manager: 0 },
   // ]
-  
+ 
     var useObj = [
       // {account: '560777', userName: '管理员小德', userId: 201, psw: md5(md5('345678')), creatTime: new Date().getTime(), manager: 1 , checkerId: 1},
       // {account: '560888', userName: '超级管理员null', userId: 1, psw: md5(md5('060100')), creatTime: new Date().getTime(), manager: 2 , checkerId: 0},
-      {account: '111222', userName: '文中', userId: 204, psw: md5(md5('aaabbb')), creatTime: new Date().getTime(), manager: 1 , checkerId: 1},
+      {account: '680768', userName: '邱园', userId: RandomNumBoth(), psw: md5(md5('123456')), creatTime: new Date().getTime(), manager: 1 , checkerId: 1},
+      {account: '560237', userName: '黄子勋', userId: RandomNumBoth(), psw: md5(md5('123456')), creatTime: new Date().getTime(), manager: 1 , checkerId: 1},
+      {account: '560288', userName: '陈志豪', userId: RandomNumBoth(), psw: md5(md5('123456')), creatTime: new Date().getTime(), manager: 0 , checkerId: 1},
+      {account: '560253', userName: '李远钦', userId: RandomNumBoth(), psw: md5(md5('123456')), creatTime: new Date().getTime(), manager: 0 , checkerId: 1},
+      {account: '148600', userName: '鄢辉', userId: RandomNumBoth(), psw: md5(md5('123456')), creatTime: new Date().getTime(), manager: 0 , checkerId: 1},
+      {account: '390938', userName: '曾海涛', userId: RandomNumBoth(), psw: md5(md5('123456')), creatTime: new Date().getTime(), manager: 0 , checkerId: 1},
+      {account: '560266', userName: '黎强', userId: RandomNumBoth(), psw: md5(md5('123456')), creatTime: new Date().getTime(), manager: 0 , checkerId: 1},
+      {account: '560127', userName: '吴敏', userId: RandomNumBoth(), psw: md5(md5('123456')), creatTime: new Date().getTime(), manager: 0 , checkerId: 1},
+      {account: '560353', userName: '梁慧勇', userId: RandomNumBoth(), psw: md5(md5('123456')), creatTime: new Date().getTime(), manager: 0 , checkerId: 1},
     ]
     // dbBase.collection("test").createIndex({"creatTime": 1},{expireAfterSeconds: 10})
     dbBase.collection("user").insertMany(useObj, function(err, res){

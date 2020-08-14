@@ -24,6 +24,7 @@ const apkListSchema = new Schema({
   platformType: Number, // 平台
   url: String, // 文件路径
   checkerId: Number, // 审批人
+  buildName: String, // 版本名
 })
 
 apkListSchema.index({

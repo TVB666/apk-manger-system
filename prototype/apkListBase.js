@@ -82,8 +82,8 @@ class ApkListComponent extends BaseDao {
 
     // 找人
     userId = userId >> 0
-    const user = UserSchema.find(userId)
-    if (!user) {
+    const userData = await UserSchema.findOne({userId})
+    if (!userData) {
       res.status(510).send(this.handleRes(510))
       res.end()
       return;
@@ -106,7 +106,7 @@ class ApkListComponent extends BaseDao {
       const writeObj = {
         // createdAt: new Date(),
         userId,
-        userName: user.userName,
+        userName: userData.userName,
         createTime: new Date().getTime(), // 生成时间
         overTime: new Date().getTime() + 1000 * 60 * 20, // 超期时间
         orderStatus: 1, // 状态
@@ -122,8 +122,7 @@ class ApkListComponent extends BaseDao {
 
   // 绑定版本&&apk
   async bindingApk(req, res, next){
-    console.log('-------------', req.headers.token);
-    
+
     const tokenRes = this.hasCorrectToken(req, res)
     if (!tokenRes) return
 
@@ -143,7 +142,7 @@ class ApkListComponent extends BaseDao {
       return;
     }
 
-    const userData = await ApkListSchema.findOne({ userId: userId >> 0})
+    const userData = await UserSchema.findOne({ userId: userId >> 0})
     if(!userData){
       res.status(510).send(this.handleRes(510))
       return;
@@ -227,7 +226,7 @@ class ApkListComponent extends BaseDao {
 
       // 找人
       userId = userId >> 0
-      const userData = UserSchema.find({userId})
+      const userData = await UserSchema.find({userId})
       if (!userData) {
         res.status(510).send(this.handleRes(510))
         res.end()
@@ -312,8 +311,8 @@ class ApkListComponent extends BaseDao {
 
         // 上传
         const updata = {
-           // _api_key: 'f6214162182b85f2ef95eeb1e79c4c6a', // 鹏鹏的
-          _api_key: '85c5f75e243c4cf088e8b3462dfe561a',
+           _api_key: 'f6214162182b85f2ef95eeb1e79c4c6a', // 鹏鹏的
+          // _api_key: '85c5f75e243c4cf088e8b3462dfe561a',
           file: {
             file: orderIdList.url,
             content_type: 'multipart/form-data'

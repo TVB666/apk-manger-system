@@ -38,14 +38,14 @@ var storage = multer.diskStorage({
 
 var fileFilter = function(req, file, cb) {
    // 限制文件上传类型
-  if(file.mimetype == 'application/vnd.android.package-archive'){
+  if(file.mimetype == 'application/vnd.android.package-archive' || file.mimetype == 'application/octet-stream'){
     cb(null, true)
   } else {
     cb(null, false)
   }
 }
 
-var upload = multer({limits, storage, fileFilter})
+var upload = multer({storage, fileFilter})
 var uploadfileSingle = upload.array('file')
 
 const uploadApk = function(req, res){

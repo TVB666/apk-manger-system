@@ -3,7 +3,7 @@ import {
   createToken as crToken
 } from "../utils/token"
 import { codeObj } from  '../utils/handleResult'
-
+import chalk from 'chalk';
 export default class BaseDao {
   /**
    * 子类构造传入对应的 Model 类
@@ -195,6 +195,7 @@ export default class BaseDao {
     if (code === 500) {
       console.log('--error--', res);
     }
+    console.log(chalk.green(`请求返回: ${code}`))
     const obj = {
       code,
       msg: codeObj[code],

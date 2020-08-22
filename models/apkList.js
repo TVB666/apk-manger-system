@@ -25,6 +25,10 @@ const apkListSchema = new Schema({
   url: String, // 文件路径
   checkerId: Number, // 审批人
   buildName: String, // 版本名
+  // createdAt: { // 自删除功能
+  //   type: Date,
+  //   index: {expires: 60*10}
+  // }
 })
 
 apkListSchema.index({

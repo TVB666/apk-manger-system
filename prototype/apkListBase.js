@@ -113,6 +113,7 @@ class ApkListComponent extends BaseDao {
         platformType, // 平台
         version,
         orderId,
+        // createdAt: Date.now()
       }
       const writeResult = await ApkListSchema.insertMany(writeObj)
       res.status(200).send(this.handleRes(200, writeResult))

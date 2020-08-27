@@ -1,6 +1,7 @@
 'use strict'
 
 import mongoose from 'mongoose'
+import { ObjectId } from 'mongodb';
 
 const Schema = mongoose.Schema
 
@@ -15,6 +16,7 @@ const userSchema = new Schema({
   manager: Number, // 管理级别 0: 普通用户  1:普通管理、 2:超级管理员
   checkerId: Number, // 创建者id
   account: String, // 账户名字
+  _id: ObjectId, // 数据库id
 })
 
 userSchema.index({id: 1});

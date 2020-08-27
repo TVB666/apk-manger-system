@@ -3,6 +3,7 @@
 import mongoose from 'mongoose'
 mongoose.set('useFindAndModify', false)
 const Schema = mongoose.Schema
+import { ObjectId } from 'mongodb'
 
 const apkListSchema = new Schema({
   // createdAt: {type: Date, default: Date.now},
@@ -23,8 +24,11 @@ const apkListSchema = new Schema({
   orderId: Number, // 订单id
   platformType: Number, // 平台
   url: String, // 文件路径
-  checkerId: Number, // 审批人
+  checkerId: Number, // 审批人id
+  checkerName: String, // 审批人
   buildName: String, // 版本名
+  user_id: ObjectId, // 使用者id  对应 数据库_id
+  checker_id: ObjectId,
   // createdAt: { // 自删除功能
   //   type: Date,
   //   index: {expires: 60*10}

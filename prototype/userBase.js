@@ -33,6 +33,7 @@ class UserComponent extends BaseDao {
           psw
         }),
         userId: admin.userId,
+        _id: admin._id,
         userName: admin.userName,
         account: admin.account,
         manager: admin.manager,

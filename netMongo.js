@@ -34,25 +34,25 @@ MongoClient.connect(url, {
   //   {userName: 'adminnnn', userId: 10086666, psw: "14e1b600b1fd579f47433b88e8d85291", creatTime: new Date(), manager: 0 },
   // ]
  
-    var useObj = [
-      // {account: '560777', userName: '管理员小德', userId: 201, psw: md5(md5('345678')), creatTime: new Date().getTime(), manager: 1 , checkerId: 1},
-      // {account: '560888', userName: '超级管理员null', userId: 1, psw: md5(md5('060100')), creatTime: new Date().getTime(), manager: 2 , checkerId: 0},
-      {account: '680768', userName: '邱园', userId: RandomNumBoth(), psw: md5(md5('123456')), creatTime: new Date().getTime(), manager: 1 , checkerId: 1},
-      {account: '560237', userName: '黄子勋', userId: RandomNumBoth(), psw: md5(md5('123456')), creatTime: new Date().getTime(), manager: 1 , checkerId: 1},
-      {account: '560288', userName: '陈志豪', userId: RandomNumBoth(), psw: md5(md5('123456')), creatTime: new Date().getTime(), manager: 0 , checkerId: 1},
-      {account: '560253', userName: '李远钦', userId: RandomNumBoth(), psw: md5(md5('123456')), creatTime: new Date().getTime(), manager: 0 , checkerId: 1},
-      {account: '148600', userName: '鄢辉', userId: RandomNumBoth(), psw: md5(md5('123456')), creatTime: new Date().getTime(), manager: 0 , checkerId: 1},
-      {account: '390938', userName: '曾海涛', userId: RandomNumBoth(), psw: md5(md5('123456')), creatTime: new Date().getTime(), manager: 0 , checkerId: 1},
-      {account: '560266', userName: '黎强', userId: RandomNumBoth(), psw: md5(md5('123456')), creatTime: new Date().getTime(), manager: 0 , checkerId: 1},
-      {account: '560127', userName: '吴敏', userId: RandomNumBoth(), psw: md5(md5('123456')), creatTime: new Date().getTime(), manager: 0 , checkerId: 1},
-      {account: '560353', userName: '梁慧勇', userId: RandomNumBoth(), psw: md5(md5('123456')), creatTime: new Date().getTime(), manager: 0 , checkerId: 1},
-    ]
-    // dbBase.collection("test").createIndex({"creatTime": 1},{expireAfterSeconds: 10})
-    dbBase.collection("user").insertMany(useObj, function(err, res){
-      if(err) throw err
-      console.log('插入成功');
-      db.close
-    })
+    // var useObj = [
+    //   // {account: '560777', userName: '管理员小德', userId: 201, psw: md5(md5('345678')), creatTime: new Date().getTime(), manager: 1 , checkerId: 1},
+    //   // {account: '560888', userName: '超级管理员null', userId: 1, psw: md5(md5('060100')), creatTime: new Date().getTime(), manager: 2 , checkerId: 0},
+    //   {account: '680768', userName: '邱园', userId: RandomNumBoth(), psw: md5(md5('123456')), creatTime: new Date().getTime(), manager: 1 , checkerId: 1},
+    //   {account: '560237', userName: '黄子勋', userId: RandomNumBoth(), psw: md5(md5('123456')), creatTime: new Date().getTime(), manager: 1 , checkerId: 1},
+    //   {account: '560288', userName: '陈志豪', userId: RandomNumBoth(), psw: md5(md5('123456')), creatTime: new Date().getTime(), manager: 0 , checkerId: 1},
+    //   {account: '560253', userName: '李远钦', userId: RandomNumBoth(), psw: md5(md5('123456')), creatTime: new Date().getTime(), manager: 0 , checkerId: 1},
+    //   {account: '148600', userName: '鄢辉', userId: RandomNumBoth(), psw: md5(md5('123456')), creatTime: new Date().getTime(), manager: 0 , checkerId: 1},
+    //   {account: '390938', userName: '曾海涛', userId: RandomNumBoth(), psw: md5(md5('123456')), creatTime: new Date().getTime(), manager: 0 , checkerId: 1},
+    //   {account: '560266', userName: '黎强', userId: RandomNumBoth(), psw: md5(md5('123456')), creatTime: new Date().getTime(), manager: 0 , checkerId: 1},
+    //   {account: '560127', userName: '吴敏', userId: RandomNumBoth(), psw: md5(md5('123456')), creatTime: new Date().getTime(), manager: 0 , checkerId: 1},
+    //   {account: '560353', userName: '梁慧勇', userId: RandomNumBoth(), psw: md5(md5('123456')), creatTime: new Date().getTime(), manager: 0 , checkerId: 1},
+    // ]
+    // // dbBase.collection("test").createIndex({"creatTime": 1},{expireAfterSeconds: 10})
+    // dbBase.collection("user").insertMany(useObj, function(err, res){
+    //   if(err) throw err
+    //   console.log('插入成功');
+    //   db.close
+    // })
     // var orderObj = [
     //   {userName: 'admin', userId: 10086, version: '1.0.1.0.1', createTime: new Date().getTime(), overTime: new Date().getTime() + 1000 * 60 * 60 * 24 * 3, finishTime: '', orderId: 1, orderStatus: 0 },
     // ]
@@ -72,12 +72,12 @@ MongoClient.connect(url, {
 
 
   // 查询数据 R  find
-  // var whereStr = {"userName":'admin'};  // 查询条件
-  // dbBase.collection("user").find(whereStr).toArray(function (err, ressult) {
-  //   if (err) throw err;
-  //   console.log(ressult);
-  //   dbBase.close
-  // })
+  var whereStr = {"orderId":110};  // 查询条件
+  dbBase.collection("apkList").find(whereStr).toArray(function (err, ressult) {
+    if (err) throw err;
+    console.log(ressult);
+    dbBase.close
+  })
 
   // 更新数据 U  updateOne(只变更找到的第一条) updateMany(变更找到的全部) 注意新数据要加 {$set: {}} result.nModified 为更新的条数
   // var whereStr = {"id":'560178933'};  

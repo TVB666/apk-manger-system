@@ -13,6 +13,7 @@ router.post('/bindingApk', ApkListComponent.bindingApk); // 绑定版本&&apk
 router.post('/operationOrder', ApkListComponent.operationOrder); // 订单操作
 router.get('/downloadApk', ApkListComponent.downloadApk); // 下载操作
 router.post('/uploadApk', uploadApk ); //上传apk
+router.post('/test', ApkListComponent.test ); //上传apk
 
 
 export default router

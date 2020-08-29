@@ -4,10 +4,13 @@ import BaseDao from './BaseDao'
 import ApkListSchema from '../models/apkList'
 import UserSchema from '../models/user'
 import IdSequenceSchema from '../models/idSequence'
-import { ObjectId } from 'mongodb';
+import chalk from 'chalk';
+import { json } from 'body-parser';
 var fs = require('fs');
 var needle = require('needle');
 const pgyerUrl = 'https://www.pgyer.com/apiv2/app/upload'
+const sendWxNoticeUrl = 'https://sc.ftqq.com/'
+const approveKey = 'SCU73771T7668a3da7413336e5dbe9a800bd9dc475e07536e41636' // 我的审批推送key
 class ApkListComponent extends BaseDao {
   constructor() {
     super();
@@ -18,7 +21,7 @@ class ApkListComponent extends BaseDao {
     this.bindingApk = this.bindingApk.bind(this);
     this.downloadApk = this.downloadApk.bind(this);
     this.getNextSequenceValue = this.getNextSequenceValue.bind(this);
-    
+    this.sendWxTitle = this.sendWxTitle.bind(this);
   }
   
   // 校验token
@@ -54,6 +57,7 @@ class ApkListComponent extends BaseDao {
     let arrList = apkList.slice(startIndex, startIndex + (limit >> 0))
     for (let index = 0; index < arrList.length; index++) {
       const element = arrList[index];
+      //  使用者id
       if(element.user_id){
         const userData = await UserSchema.findOne({ _id : element.user_id })
         if(userData)arrList[index].userName = userData.userName
@@ -61,6 +65,7 @@ class ApkListComponent extends BaseDao {
         const userData = await UserSchema.findOne({ userId : element.userId })
         if(userData)arrList[index].userName = userData.userName
       }
+      //  审批id
       if(element.checker_id){
         const checkerData = await UserSchema.findOne({ _id: element.checker_id })
         if(checkerData) arrList[index].checkerName = checkerData.userName
@@ -132,7 +137,7 @@ class ApkListComponent extends BaseDao {
         // createdAt: Date.now()
       }
       const writeResult = await ApkListSchema.insertMany(writeObj)
-      res.status(200).send(this.handleRes(200, writeResult))
+      res.status(200).send(this.handleRes(200, writeResult));
     }
     res.end();
   };
@@ -216,10 +221,13 @@ class ApkListComponent extends BaseDao {
         const writeResult = await ApkListSchema.insertMany(writeObj)
         if(!writeResult) throw err
         res.status(200).send(this.handleRes(200, writeResult)) // ok
+        // 推送消息
+        const text = `${userData.userName}上传了${buildName}。 \n 大帅比，请您及时处理。`
+        const baseUrl = `${approveKey}.send?text=${encodeURI(text)}`
+        this.sendWxTitle(baseUrl)
       }
     }
     res.end()
-
   };
 
   // 订单操作 1 : 同意, 2: 驳回, 3: 删除
@@ -256,9 +264,13 @@ class ApkListComponent extends BaseDao {
         return;
       }
 
+      // 订单使用者信息
+      this.apkUserData = await UserSchema.findOne({_id:  orderIdList.user_id})
+
     // 删除操作
     if (operationType == '3') {
-      if (orderIdList.user_id != userData._id && (Number(userData.manager) <= 1)) { // 不是同一人 或没有权限
+      const notSimpleId = (JSON.stringify(orderIdList.user_id) != JSON.stringify(userData._id))
+      if (notSimpleId && (userData.manager <= 1)) { // 不是同一人 且 没有权限
         res.status(516).send(this.handleRes(516))
       } else {
         let whereStr = {
@@ -274,7 +286,7 @@ class ApkListComponent extends BaseDao {
 
     // 驳回操作
     if (operationType == '2') {
-      if (userData.manager <= 1) { // 是否有权限操作
+      if (userData.manager < 1) { // 是否有权限操作
         res.status(516).send(this.handleRes(516))
       } else if (orderIdList.orderStatus != 2) { // 判断订单状态是否合法
         res.status(518).send(this.handleRes(518))
@@ -320,14 +332,15 @@ class ApkListComponent extends BaseDao {
         const whatUpdate = {
           orderId: orderId >> 0
         }
-
         const beforeApkResult = await ApkListSchema.updateOne(whatUpdate, beforeSetObj)
         if (!beforeApkResult) throw err
+        res.status(200).send(this.handleRes(200, beforeApkResult))
+        res.end();
 
         // 上传
         const updata = {
-           _api_key: 'f6214162182b85f2ef95eeb1e79c4c6a', // 鹏鹏的
-          // _api_key: '85c5f75e243c4cf088e8b3462dfe561a', // 我的
+          //  _api_key: 'f6214162182b85f2ef95eeb1e79c4c6a', // 鹏鹏的
+          _api_key: '85c5f75e243c4cf088e8b3462dfe561a', // 我的
           file: {
             file: orderIdList.url,
             content_type: 'multipart/form-data'
@@ -339,6 +352,7 @@ class ApkListComponent extends BaseDao {
           buildName: orderIdList.buildName  //平台
         }
         let that = this
+        console.log(chalk.green('-------开始上传----'));
         needle.post(pgyerUrl, updata, {
           multipart: true
         }, async function (err, resp, body) {
@@ -350,6 +364,9 @@ class ApkListComponent extends BaseDao {
                 orderStatus: 6  //TODO枚举
               }
             }
+            text =  `${orderIdList.buildName}上传失败。请再次上传`
+            const baseUrl = `${approveKey}.send?text=${encodeURI(text)}`
+            that.sendWxTitle(baseUrl)
           } else {
             // 上传成功 
             console.log('body', body);
@@ -360,17 +377,21 @@ class ApkListComponent extends BaseDao {
             setObj = {
               $set: updataObj
             }
+            if(that.apkUserData.sckey){
+              const text = `尊敬的${userData.userName}, 您的${orderIdList.buildName}已成功上传蒲公英。详情请移步蒲公英查看`
+              const baseUrl = `${approveKey}.send?text=${encodeURI(text)}`
+              that.sendWxTitle(baseUrl)
+            } else {
+              console.log(chalk.yellow(`--${that.apkUserData.userName}--没有sckey-`));
+            }
           }
 
           // 上传成功与否，都更新数据库
           const apkResult = await ApkListSchema.updateOne(whatUpdate, setObj)
           if (!apkResult) throw err
           if (err) throw err
-
-          res.status(200).send(that.handleRes(200, apkResult))
           // you can pass params as a string or as an object.
         });
-        res.end();
       }
     }
   };
@@ -409,6 +430,16 @@ class ApkListComponent extends BaseDao {
       {new: true})
     return sequenceDocument.sequence_value;
   };
+
+  // 发送微信消息
+  sendWxTitle(baseUrl){
+    const url = sendWxNoticeUrl + baseUrl
+    needle.get(url, function(err, resp, body){
+      if(err){
+        console.log(chalk.red(err));
+      }
+    })
+  }
 
   async test(req, res, next){
     let {

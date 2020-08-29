@@ -17,6 +17,7 @@ const userSchema = new Schema({
   checkerId: Number, // 创建者id
   account: String, // 账户名字
   _id: ObjectId, // 数据库id
+  sckey: String, // 推送key
 })
 
 userSchema.index({id: 1});

@@ -7,9 +7,9 @@ import chalk from 'chalk'
 import db from './mongodb/db.js';
 const config = require('config-lite')(__dirname);   // 配置 && 代码分离
 
-var http= require('http'); //用来启服务
-var fs= require('fs'); //用来读取文件
-var root = "F:\\apk-manageSystem\\dist"
+// var http= require('http'); //用来启服务
+// var fs= require('fs'); //用来读取文件
+// var root = "F:\\apk-manageSystem\\dist"
 
 // 自定义log 带上时间输出
 console.oldlog = console.log;

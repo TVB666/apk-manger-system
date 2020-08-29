@@ -2,7 +2,7 @@ import {
   verifyToken as chToken,
   createToken as crToken
 } from "../utils/token"
-import { codeObj } from  '../utils/handleResult'
+import { codeObj } from  '../utils'
 import chalk from 'chalk';
 export default class BaseDao {
   /**
@@ -12,6 +12,7 @@ export default class BaseDao {
    */
   constructor(Model) {
     this.Model = Model;
+    this.sendRes = this.sendRes.bind(this);
   }
 
 
@@ -191,7 +192,7 @@ export default class BaseDao {
   }
 
 
-  handleRes(code, res = '') {
+  sendRes(res, code, result = '') {
     if (code === 500) {
       console.log('--error--', res);
     }
@@ -199,8 +200,8 @@ export default class BaseDao {
     const obj = {
       code,
       msg: codeObj[code],
-      res
+      res: result
     }
-    return JSON.stringify(obj)
+    res.status(code).send(JSON.stringify(obj))
   }
 }

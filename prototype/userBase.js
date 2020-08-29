@@ -15,17 +15,17 @@ class UserComponent extends BaseDao {
       psw
     } = req.body
     if (!account || !psw) {
-      res.status(515).send(this.handleRes(515))
+      this.sendRes(res, 515)
       res.end()
       return;
     }
 
     const admin = await UserSchema.findOne({account})
     if (!admin) {
-      res.status(510).send(this.handleRes(510))
+      this.sendRes(res, 510)
       return
     } else if (admin.psw !== psw) {
-      res.status(511).send(this.handleRes(511))
+      this.sendRes(res, 511)
     } else {
       let resObj = {
         token: this.createToken({
@@ -38,7 +38,7 @@ class UserComponent extends BaseDao {
         account: admin.account,
         manager: admin.manager,
       }
-      res.status(200).send(this.handleRes(200, resObj))
+      this.sendRes(res, 200, resObj)
     }
     res.end()
   }

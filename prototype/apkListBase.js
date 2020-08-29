@@ -5,12 +5,17 @@ import ApkListSchema from '../models/apkList'
 import UserSchema from '../models/user'
 import IdSequenceSchema from '../models/idSequence'
 import chalk from 'chalk';
-import { json } from 'body-parser';
+import { orderStatus, operatTypeENUM, platform } from '../utils/index'
+import * as address from '../utils/url'
+
+import { platformConfig } from '../utils/config'
+
 var fs = require('fs');
 var needle = require('needle');
-const pgyerUrl = 'https://www.pgyer.com/apiv2/app/upload'
-const sendWxNoticeUrl = 'https://sc.ftqq.com/'
-const approveKey = 'SCU73771T7668a3da7413336e5dbe9a800bd9dc475e07536e41636' // 我的审批推送key
+
+// const approveKey = 'SCU73771T7668a3da7413336e5dbe9a800bd9dc475e07536e41636' // 我的审批推送key
+const approveKey = 'SCU111290T2a29638b5bf9e4c9882374b8c2b3f5cb5f4a07290c9ca' // 鹏鹏的审批推送key
+
 class ApkListComponent extends BaseDao {
   constructor() {
     super();
@@ -29,7 +34,7 @@ class ApkListComponent extends BaseDao {
     const token = req.headers.token
     const tokenResult = this.checkToken(token)
     if (!tokenResult.success) {
-      res.status(501).send(this.handleRes(501))
+      this.sendRes(res, 501)
       res.end();
       return;
     }
@@ -82,7 +87,7 @@ class ApkListComponent extends BaseDao {
       page: page >> 0,
       limit: limit >> 0
     }
-    res.status(200).send(this.handleRes(200, result))
+    this.sendRes(res, 200, result)
     res.end();
   };
 
@@ -99,7 +104,7 @@ class ApkListComponent extends BaseDao {
       platformType = null
     } = req.body
     if (!userId || !version || !platformType) {
-      res.status(515).send(this.handleRes(515))
+      this.sendRes(res, 515)
       res.end()
       return;
     }
@@ -107,7 +112,7 @@ class ApkListComponent extends BaseDao {
     // 找人
     const userData = await UserSchema.findOne({userId: userId >> 0})
     if (!userData) {
-      res.status(510).send(this.handleRes(510))
+      this.sendRes(res, 510)
       res.end()
       return;
     }
@@ -120,9 +125,9 @@ class ApkListComponent extends BaseDao {
     const apkList = await ApkListSchema.findOne(findVer)
     if (apkList) { // 判断有无
       if (apkList.user_id == userData._id) { // 您已经绑定过该版本号了
-        res.status(201).send(this.handleRes(201))
+        this.sendRes(res, 201)
       } else { //判断该版本是否是该使用者 
-        res.status(514).send(this.handleRes(514))
+        this.sendRes(res, 514)
       }
     } else { // 无则绑定
       const orderId = await this.getNextSequenceValue()
@@ -130,14 +135,14 @@ class ApkListComponent extends BaseDao {
         user_id: userData._id,
         createTime: new Date().getTime(), // 生成时间
         overTime: new Date().getTime() + 1000 * 60 * 20, // 超期时间
-        orderStatus: 1, // 状态
+        orderStatus: orderStatus.ENUM_order_use,
         platformType, // 平台
         version,
         orderId,
         // createdAt: Date.now()
       }
       const writeResult = await ApkListSchema.insertMany(writeObj)
-      res.status(200).send(this.handleRes(200, writeResult));
+      this.sendRes(res, 200, writeResult)
     }
     res.end();
   };
@@ -160,18 +165,18 @@ class ApkListComponent extends BaseDao {
     } = req.body
 
     if(!(userId && url && version && platformType  && describe && buildName)){
-      res.status(515).send(this.handleRes(515))
+      this.sendRes(res, 515)
       return;
     }
 
     const userData = await UserSchema.findOne({ userId: userId >> 0})
     if(!userData){
-      res.status(510).send(this.handleRes(510))
+      this.sendRes(res, 510)
       return;
     }
 
     if (!fs.existsSync(url)) { //判断路径文件是否存在
-      res.status(513).send(this.handleRes(513))
+      this.sendRes(res, 513)
       res.end();
       return
     }
@@ -183,14 +188,15 @@ class ApkListComponent extends BaseDao {
     }
 
     if(isExistenceVersion && verResult.user_id !== userData._id ){ //版本存在 & 使用者相同
-      res.status(514).send(this.handleRes(514))
+      this.sendRes(res, 514)
+
     } else {
 
       if(isExistenceVersion){
         const apkObj = {
           overTime: new Date().getTime() +  1000 * 60 * 60 * 24 * 3, // 超期时间
           uploadTime: new Date().getTime(),
-          orderStatus: 2,
+          orderStatus: orderStatus.ENUM_to_audit,
           url,
           describe,
           buildName
@@ -200,8 +206,7 @@ class ApkListComponent extends BaseDao {
         const apkResult = await ApkListSchema.updateOne(whatUpdate, setObj)
 
         if(!apkResult) throw err
-        res.status(200).send(this.handleRes(200, apkObj)) // ok
-  
+        this.sendRes(res, 200, apkObj)
       } else {
         console.log('--锁定版本--'); // 锁定版本
         const orderId = await this.getNextSequenceValue()
@@ -210,7 +215,7 @@ class ApkListComponent extends BaseDao {
           createTime: new Date().getTime(), // 生成时间
           uploadTime: new Date().getTime(),
           overTime: new Date().getTime() + 1000 * 60 * 60 * 24 * 3, // 超期时间
-          orderStatus: 2, // 状态
+          orderStatus: orderStatus.ENUM_to_audit, // 状态
           platformType, // 平台
           version,
           url,
@@ -220,7 +225,7 @@ class ApkListComponent extends BaseDao {
         }
         const writeResult = await ApkListSchema.insertMany(writeObj)
         if(!writeResult) throw err
-        res.status(200).send(this.handleRes(200, writeResult)) // ok
+        this.sendRes(res, 200, writeResult)
         // 推送消息
         const text = `${userData.userName}上传了${buildName}。 \n 大帅比，请您及时处理。`
         const baseUrl = `${approveKey}.send?text=${encodeURI(text)}`
@@ -243,7 +248,7 @@ class ApkListComponent extends BaseDao {
         operationType
       } = req.body
       if (!userId || !orderId || !operationType) {
-        res.status(515).send(this.handleRes(515))
+        this.sendRes(res, 515)
         res.end()
         return;
       }
@@ -251,7 +256,7 @@ class ApkListComponent extends BaseDao {
       // 找人
       const userData = await UserSchema.findOne({userId: userId >> 0})
       if (!userData) {
-        res.status(510).send(this.handleRes(510))
+        this.sendRes(res, 510)
         res.end()
         return;
       }
@@ -259,7 +264,7 @@ class ApkListComponent extends BaseDao {
       // 校验订单号
       const orderIdList = await ApkListSchema.findOne({orderId: orderId >> 0})
       if(!orderIdList) {
-        res.status(517).send(this.handleRes(517))
+        this.sendRes(res, 517)
         res.end()
         return;
       }
@@ -268,32 +273,32 @@ class ApkListComponent extends BaseDao {
       this.apkUserData = await UserSchema.findOne({_id:  orderIdList.user_id})
 
     // 删除操作
-    if (operationType == '3') {
+    if (operationType == operatTypeENUM.ENUM_delete) {
       const notSimpleId = (JSON.stringify(orderIdList.user_id) != JSON.stringify(userData._id))
       if (notSimpleId && (userData.manager <= 1)) { // 不是同一人 且 没有权限
-        res.status(516).send(this.handleRes(516))
+        this.sendRes(res, 516)
       } else {
         let whereStr = {
           orderId: orderId >> 0
         };
         const deleteResult =  await ApkListSchema.deleteOne(whereStr)
         if (!deleteResult) throw err
-        res.status(200).send(this.handleRes(200))
+        this.sendRes(res, 200)
       }
       res.end();
       return;
     }
 
     // 驳回操作
-    if (operationType == '2') {
+    if (operationType == operatTypeENUM.ENUM_rejected) {
       if (userData.manager < 1) { // 是否有权限操作
-        res.status(516).send(this.handleRes(516))
-      } else if (orderIdList.orderStatus != 2) { // 判断订单状态是否合法
-        res.status(518).send(this.handleRes(518))
+        this.sendRes(res, 516)
+      } else if (orderIdList.orderStatus != orderStatus.ENUM_to_audit) { // 判断订单状态是否合法
+        this.sendRes(res, 518)
       } else {
         const updataObj = {
           checker_id: userData._id,
-          orderStatus: 3,
+          orderStatus: orderStatus.ENUM_to_modify,
           checkTime: new Date()
         }
         const setObj = {
@@ -304,26 +309,27 @@ class ApkListComponent extends BaseDao {
         }
         const updataResult =  await ApkListSchema.updateOne(whatUpdate, setObj)
         if (!updataResult) throw err
-        res.status(200).send(this.handleRes(200))
+        this.sendRes(res, 200)
       }
       res.end();
       return;
     }
 
     //  同意
-    if (operationType == '1') {
+    if (operationType == operatTypeENUM.ENUM_agree) {
       const fileUrl = orderIdList.url
       if (userData.manager < 1) { // 是否有权限操作
-        res.status(516).send(this.handleRes(516))
-      } else if (orderIdList.orderStatus != 2 && orderIdList.orderStatus != 3) { // 判断订单状态是否合法
-        res.status(518).send(this.handleRes(518))
+        this.sendRes(res, 516)
+      } else if (orderIdList.orderStatus != orderStatus.ENUM_to_audit && orderIdList.orderStatus != orderStatus.ENUM_to_modify) { 
+        // 判断订单状态是否合法
+        this.sendRes(res, 518)
       } else if (!fs.existsSync(fileUrl)) { //判断路径文件是否存在
-        res.status(513).send(this.handleRes(513))
+        this.sendRes(res, 513)
       } else {
         // 上传前把预约状态修改为 '上传中'
         const beforeUpdataObj = {
           checkTime: new Date().getTime(),
-          orderStatus: 5, // TODO枚举
+          orderStatus: orderStatus.ENUM_upload_ing,
           checker_id: userData._id,
         }
         const beforeSetObj = {
@@ -334,26 +340,26 @@ class ApkListComponent extends BaseDao {
         }
         const beforeApkResult = await ApkListSchema.updateOne(whatUpdate, beforeSetObj)
         if (!beforeApkResult) throw err
-        res.status(200).send(this.handleRes(200, beforeApkResult))
+        this.sendRes(res, 200, beforeApkResult)
         res.end();
 
         // 上传
+        
+        const config = platformConfig[platform[platformType]]
         const updata = {
-          //  _api_key: 'f6214162182b85f2ef95eeb1e79c4c6a', // 鹏鹏的
-          _api_key: '85c5f75e243c4cf088e8b3462dfe561a', // 我的
+           _api_key: config._api_key,
           file: {
             file: orderIdList.url,
             content_type: 'multipart/form-data'
           },
-          buildInstallType: 2,
-          buildPassword: 'qwe!23', //TODO读数据库
-          // buildPassword: 'iot4', 
+          buildInstallType: config.buildInstallType,
+          buildPassword: config.buildPassword, 
           buildUpdateDescription: orderIdList.describe,
           buildName: orderIdList.buildName  //平台
         }
         let that = this
         console.log(chalk.green('-------开始上传----'));
-        needle.post(pgyerUrl, updata, {
+        needle.post(config.uploadUrl, updata, {
           multipart: true
         }, async function (err, resp, body) {
           let setObj = {}
@@ -361,7 +367,7 @@ class ApkListComponent extends BaseDao {
             console.log('err', err);
             setObj = {
               $set: {
-                orderStatus: 6  //TODO枚举
+                orderStatus: orderStatus.ENUM_upload_err 
               }
             }
             text =  `${orderIdList.buildName}上传失败。请再次上传`
@@ -372,7 +378,7 @@ class ApkListComponent extends BaseDao {
             console.log('body', body);
             const updataObj = {
               finishTime: new Date().getTime(),
-              orderStatus: 4, //TODO枚举
+              orderStatus: orderStatus.ENUM_has_been, 
             }
             setObj = {
               $set: updataObj
@@ -404,13 +410,13 @@ class ApkListComponent extends BaseDao {
       url
     } = req.query
     if(!url){
-      res.status(515).send(this.handleRes(515))
+      this.sendRes(515)
       res.end();
       return;
     }
 
     if (!fs.existsSync(url)) { //判断路径文件是否存在
-      res.status(513).send(this.handleRes(513))
+      this.sendRes(513)
       res.end();
       return;
     } else {
@@ -433,7 +439,7 @@ class ApkListComponent extends BaseDao {
 
   // 发送微信消息
   sendWxTitle(baseUrl){
-    const url = sendWxNoticeUrl + baseUrl
+    const url = address.sendWxNoticeUrl + baseUrl
     needle.get(url, function(err, resp, body){
       if(err){
         console.log(chalk.red(err));

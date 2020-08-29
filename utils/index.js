@@ -1,11 +1,3 @@
-/*
- * @Descripttion: 返回结果处理
- * @version: 1.0
- * @Author: ZM_lee└(^o^)┘
- * @Date: 2020-07-20 23:57:16
- * @LastEditors: ZM_lee└(^o^)┘
- * @LastEditTime: 2020-07-27 20:57:52
- */
 // code 大全
 const codeObj = {
   200: 'ok',
@@ -29,27 +21,28 @@ const codeObj = {
 
 // 列表状态
 const orderStatus = {
-  0: '未使用',
-  1: '预约使用中',
-  2: '待审核',
-  3: '待修改',
-  4: '已完成',
-  5: '上传中',
-  6: '上传失败'
+  ENUM_unable: 0, //'未使用'
+  ENUM_order_use: 1, //'预约使用中'
+  ENUM_to_audit: 2, //'待审核'
+  ENUM_to_modify : 3, //'待修改'
+  ENUM_has_been: 4, //'已完成'
+  ENUM_upload_ing: 5, //'上传中'
+  ENUM_upload_err: 6, //'上传失败'
 }
 
 // 订单操作类型
-const operationType = {
-  1: "同意",
-  2: '驳回',
-  3: '删除',
-  // 4: '下载'
+const operatTypeENUM = {
+  ENUM_agree: 1, //'同意'
+  ENUM_rejected: 2, //'驳回'
+  ENUM_delete: 3, //'删除'
 }
 
 // 平台
-const platformType = {
-  0: '格力+',
-  1: 'Gree+'
+const platform = {
+  0: 'domestic',  //格力
+  1: 'overseas', //  Gree
+  ENUM_domestic: 0,
+  ENUM_overseas: 1,
 }
 
 // 返回的数据处理
@@ -65,10 +58,10 @@ function handleRes(code, res = '') {
   return JSON.stringify(obj)
 }
 
-
-
 export {
   handleRes,
   codeObj,
-  platformType
+  platform,
+  orderStatus,
+  operatTypeENUM
 }

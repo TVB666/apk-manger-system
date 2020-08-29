@@ -2,7 +2,7 @@ import express from "express";
 import fs from "fs";
 import multer from "multer";
 const router = express.Router()
-import { handleRes } from '../utils/handleResult'
+import { handleRes } from '../utils'
 
 
 

@@ -186,12 +186,10 @@ class ApkListComponent extends BaseDao {
     if (!verResult) { // 版本不存在
       isExistenceVersion = false
     }
-
-    if(isExistenceVersion && verResult.user_id !== userData._id ){ //版本存在 & 使用者相同
+    // _id 判断相同需先转JSON
+    if(isExistenceVersion && (JSON.stringify(userData._id) != JSON.stringify(verResult.user_id))){ //版本存在 & 使用者不同
       this.sendRes(res, 514)
-
     } else {
-
       if(isExistenceVersion){
         const apkObj = {
           overTime: new Date().getTime() +  1000 * 60 * 60 * 24 * 3, // 超期时间
@@ -345,7 +343,7 @@ class ApkListComponent extends BaseDao {
 
         // 上传
         
-        const config = platformConfig[platform[platformType]]
+        const config = platformConfig[platform[orderIdList.platformType]]
         const updata = {
            _api_key: config._api_key,
           file: {

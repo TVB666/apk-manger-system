@@ -5,10 +5,16 @@ import ApkListSchema from '../models/apkList'
 import UserSchema from '../models/user'
 import IdSequenceSchema from '../models/idSequence'
 import chalk from 'chalk';
-import { orderStatus, operatTypeENUM, platform } from '../utils/index'
+import {
+  orderStatus,
+  operatTypeENUM,
+  platform
+} from '../utils/index'
 import * as address from '../utils/url'
 
-import { platformConfig } from '../utils/config'
+import {
+  platformConfig
+} from '../utils/config'
 
 var fs = require('fs');
 var needle = require('needle');
@@ -28,7 +34,7 @@ class ApkListComponent extends BaseDao {
     this.getNextSequenceValue = this.getNextSequenceValue.bind(this);
     this.sendWxTitle = this.sendWxTitle.bind(this);
   }
-  
+
   // 校验token
   hasCorrectToken(req, res) {
     const token = req.headers.token
@@ -53,7 +59,7 @@ class ApkListComponent extends BaseDao {
     const length = apkList.length
     let {
       page = 1,
-      limit = 10
+        limit = 10
     } = req.query
     page = page >> 0
     limit = limit >> 0
@@ -63,20 +69,28 @@ class ApkListComponent extends BaseDao {
     for (let index = 0; index < arrList.length; index++) {
       const element = arrList[index];
       //  使用者id
-      if(element.user_id){
-        const userData = await UserSchema.findOne({ _id : element.user_id })
-        if(userData)arrList[index].userName = userData.userName
-      }else {
-        const userData = await UserSchema.findOne({ userId : element.userId })
-        if(userData)arrList[index].userName = userData.userName
+      if (element.user_id) {
+        const userData = await UserSchema.findOne({
+          _id: element.user_id
+        })
+        if (userData) arrList[index].userName = userData.userName
+      } else {
+        const userData = await UserSchema.findOne({
+          userId: element.userId
+        })
+        if (userData) arrList[index].userName = userData.userName
       }
       //  审批id
-      if(element.checker_id){
-        const checkerData = await UserSchema.findOne({ _id: element.checker_id })
-        if(checkerData) arrList[index].checkerName = checkerData.userName
-      }else{
-        const checkerData = await UserSchema.findOne({ userId: element.checkerId })
-        if(checkerData) arrList[index].checkerName = checkerData.userName
+      if (element.checker_id) {
+        const checkerData = await UserSchema.findOne({
+          _id: element.checker_id
+        })
+        if (checkerData) arrList[index].checkerName = checkerData.userName
+      } else {
+        const checkerData = await UserSchema.findOne({
+          userId: element.checkerId
+        })
+        if (checkerData) arrList[index].checkerName = checkerData.userName
       }
     }
 
@@ -100,8 +114,8 @@ class ApkListComponent extends BaseDao {
 
     let {
       userId = null,
-      version = null,
-      platformType = null
+        version = null,
+        platformType = null
     } = req.body
     if (!userId || !version || !platformType) {
       this.sendRes(res, 515)
@@ -110,7 +124,9 @@ class ApkListComponent extends BaseDao {
     }
 
     // 找人
-    const userData = await UserSchema.findOne({userId: userId >> 0})
+    const userData = await UserSchema.findOne({
+      userId: userId >> 0
+    })
     if (!userData) {
       this.sendRes(res, 510)
       res.end()
@@ -148,7 +164,7 @@ class ApkListComponent extends BaseDao {
   };
 
   // 绑定版本&&apk
-  async bindingApk(req, res, next){
+  async bindingApk(req, res, next) {
 
     const tokenRes = this.hasCorrectToken(req, res)
     if (!tokenRes) return
@@ -164,13 +180,15 @@ class ApkListComponent extends BaseDao {
       buildName
     } = req.body
 
-    if(!(userId && url && version && platformType  && describe && buildName)){
+    if (!(userId && url && version && platformType && describe && buildName)) {
       this.sendRes(res, 515)
       return;
     }
 
-    const userData = await UserSchema.findOne({ userId: userId >> 0})
-    if(!userData){
+    const userData = await UserSchema.findOne({
+      userId: userId >> 0
+    })
+    if (!userData) {
       this.sendRes(res, 510)
       return;
     }
@@ -181,29 +199,36 @@ class ApkListComponent extends BaseDao {
       return
     }
 
-    const verResult = await ApkListSchema.findOne({version, platformType})
+    const verResult = await ApkListSchema.findOne({
+      version,
+      platformType
+    })
     let isExistenceVersion = true
     if (!verResult) { // 版本不存在
       isExistenceVersion = false
     }
     // _id 判断相同需先转JSON
-    if(isExistenceVersion && (JSON.stringify(userData._id) != JSON.stringify(verResult.user_id))){ //版本存在 & 使用者不同
+    if (isExistenceVersion && (JSON.stringify(userData._id) != JSON.stringify(verResult.user_id))) { //版本存在 & 使用者不同
       this.sendRes(res, 514)
     } else {
-      if(isExistenceVersion){
+      if (isExistenceVersion) {
         const apkObj = {
-          overTime: new Date().getTime() +  1000 * 60 * 60 * 24 * 3, // 超期时间
+          overTime: new Date().getTime() + 1000 * 60 * 60 * 24 * 3, // 超期时间
           uploadTime: new Date().getTime(),
           orderStatus: orderStatus.ENUM_to_audit,
           url,
           describe,
           buildName
         }
-        const setObj = { $set: apkObj }
-        const whatUpdate = {orderId: verResult.orderId >> 0}
+        const setObj = {
+          $set: apkObj
+        }
+        const whatUpdate = {
+          orderId: verResult.orderId >> 0
+        }
         const apkResult = await ApkListSchema.updateOne(whatUpdate, setObj)
 
-        if(!apkResult) throw err
+        if (!apkResult) throw err
         this.sendRes(res, 200, apkObj)
       } else {
         console.log('--锁定版本--'); // 锁定版本
@@ -222,7 +247,7 @@ class ApkListComponent extends BaseDao {
           buildName,
         }
         const writeResult = await ApkListSchema.insertMany(writeObj)
-        if(!writeResult) throw err
+        if (!writeResult) throw err
         this.sendRes(res, 200, writeResult)
         // 推送消息
         const text = `${userData.userName}上传了${buildName}。 \n 大帅比，请您及时处理。`
@@ -234,52 +259,58 @@ class ApkListComponent extends BaseDao {
   };
 
   // 订单操作 1 : 同意, 2: 驳回, 3: 删除
-  async operationOrder(req, res, next){
+  async operationOrder(req, res, next) {
     console.log('-----operationOrder---------', req.body);
 
     const tokenRes = this.hasCorrectToken(req, res)
     if (!tokenRes) return
-      // 检验必传参数
-      let {
-        userId,
-        orderId,
-        operationType
-      } = req.body
-      if (!userId || !orderId || !operationType) {
-        this.sendRes(res, 515)
-        res.end()
-        return;
-      }
+    // 检验必传参数
+    let {
+      userId,
+      orderId,
+      operationType
+    } = req.body
+    if (!userId || !orderId || !operationType) {
+      this.sendRes(res, 515)
+      res.end()
+      return;
+    }
 
-      // 找人
-      const userData = await UserSchema.findOne({userId: userId >> 0})
-      if (!userData) {
-        this.sendRes(res, 510)
-        res.end()
-        return;
-      }
+    // 找人
+    const userData = await UserSchema.findOne({
+      userId: userId >> 0
+    })
+    if (!userData) {
+      this.sendRes(res, 510)
+      res.end()
+      return;
+    }
 
-      // 校验订单号
-      const orderIdList = await ApkListSchema.findOne({orderId: orderId >> 0})
-      if(!orderIdList) {
-        this.sendRes(res, 517)
-        res.end()
-        return;
-      }
+    // 校验订单号
+    const orderIdList = await ApkListSchema.findOne({
+      orderId: orderId >> 0
+    })
+    if (!orderIdList) {
+      this.sendRes(res, 517)
+      res.end()
+      return;
+    }
 
-      // 订单使用者信息
-      this.apkUserData = await UserSchema.findOne({_id:  orderIdList.user_id})
+    // 订单使用者信息
+    this.apkUserData = await UserSchema.findOne({
+      _id: orderIdList.user_id
+    })
 
     // 删除操作
     if (operationType == operatTypeENUM.ENUM_delete) {
-      const notSimpleId = (JSON.stringify(orderIdList.user_id) != JSON.stringify(userData._id))
+      const notSimpleId = orderIdList.user_id ? (JSON.stringify(orderIdList.user_id) != JSON.stringify(userData._id)) : false
       if (notSimpleId && (userData.manager <= 1)) { // 不是同一人 且 没有权限
         this.sendRes(res, 516)
       } else {
         let whereStr = {
           orderId: orderId >> 0
         };
-        const deleteResult =  await ApkListSchema.deleteOne(whereStr)
+        const deleteResult = await ApkListSchema.deleteOne(whereStr)
         if (!deleteResult) throw err
         this.sendRes(res, 200)
       }
@@ -305,7 +336,7 @@ class ApkListComponent extends BaseDao {
         const whatUpdate = {
           orderId: orderId >> 0
         }
-        const updataResult =  await ApkListSchema.updateOne(whatUpdate, setObj)
+        const updataResult = await ApkListSchema.updateOne(whatUpdate, setObj)
         if (!updataResult) throw err
         this.sendRes(res, 200)
       }
@@ -318,7 +349,7 @@ class ApkListComponent extends BaseDao {
       const fileUrl = orderIdList.url
       if (userData.manager < 1) { // 是否有权限操作
         this.sendRes(res, 516)
-      } else if (orderIdList.orderStatus != orderStatus.ENUM_to_audit && orderIdList.orderStatus != orderStatus.ENUM_to_modify) { 
+      } else if (orderIdList.orderStatus != orderStatus.ENUM_to_audit && orderIdList.orderStatus != orderStatus.ENUM_to_modify) {
         // 判断订单状态是否合法
         this.sendRes(res, 518)
       } else if (!fs.existsSync(fileUrl)) { //判断路径文件是否存在
@@ -342,18 +373,18 @@ class ApkListComponent extends BaseDao {
         res.end();
 
         // 上传
-        
+
         const config = platformConfig[platform[orderIdList.platformType]]
         const updata = {
-           _api_key: config._api_key,
+          _api_key: config._api_key,
           file: {
             file: orderIdList.url,
             content_type: 'multipart/form-data'
           },
           buildInstallType: config.buildInstallType,
-          buildPassword: config.buildPassword, 
+          buildPassword: config.buildPassword,
           buildUpdateDescription: orderIdList.describe,
-          buildName: orderIdList.buildName  //平台
+          buildName: orderIdList.buildName //平台
         }
         let that = this
         console.log(chalk.green('-------开始上传----'));
@@ -365,10 +396,10 @@ class ApkListComponent extends BaseDao {
             console.log('err', err);
             setObj = {
               $set: {
-                orderStatus: orderStatus.ENUM_upload_err 
+                orderStatus: orderStatus.ENUM_upload_err
               }
             }
-            text =  `${orderIdList.buildName}上传失败。请再次上传`
+            const text = `${orderIdList.buildName}上传失败。请再次上传`
             const baseUrl = `${approveKey}.send?text=${encodeURI(text)}`
             that.sendWxTitle(baseUrl)
           } else {
@@ -376,14 +407,14 @@ class ApkListComponent extends BaseDao {
             console.log('body', body);
             const updataObj = {
               finishTime: new Date().getTime(),
-              orderStatus: orderStatus.ENUM_has_been, 
+              orderStatus: orderStatus.ENUM_has_been,
             }
             setObj = {
               $set: updataObj
             }
-            if(that.apkUserData.sckey){
-              const text = `尊敬的${userData.userName}, 您的${orderIdList.buildName}已成功上传蒲公英。详情请移步蒲公英查看`
-              const baseUrl = `${approveKey}.send?text=${encodeURI(text)}`
+            if (that.apkUserData.sckey) {
+              const text = `尊敬的${that.apkUserData.userName}, 您的${orderIdList.buildName}已成功上传蒲公英。详情请移步蒲公英查看`
+              const baseUrl = `${that.apkUserData.sckey}.send?text=${encodeURI(text)}`
               that.sendWxTitle(baseUrl)
             } else {
               console.log(chalk.yellow(`--${that.apkUserData.userName}--没有sckey-`));
@@ -401,13 +432,13 @@ class ApkListComponent extends BaseDao {
   };
 
   // 下载apk
-  downloadApk(req, res, next){
+  downloadApk(req, res, next) {
     console.log('----------downloadApk---------', req.query);
 
     const {
       url
     } = req.query
-    if(!url){
+    if (!url) {
       this.sendRes(515)
       res.end();
       return;
@@ -418,8 +449,8 @@ class ApkListComponent extends BaseDao {
       res.end();
       return;
     } else {
-      res.download(url, function(err){
-        if(err){
+      res.download(url, function (err) {
+        if (err) {
           console.log('err---', err);
         }
       })
@@ -427,32 +458,41 @@ class ApkListComponent extends BaseDao {
   };
 
   // id自加一
-  async getNextSequenceValue(){
-    const sequenceDocument = await IdSequenceSchema.findOneAndUpdate(
-      {"id_key": 'orderId' },
-      {$inc:{sequence_value:1}},
-      {new: true})
+  async getNextSequenceValue() {
+    const sequenceDocument = await IdSequenceSchema.findOneAndUpdate({
+      "id_key": 'orderId'
+    }, {
+      $inc: {
+        sequence_value: 1
+      }
+    }, {
+      new: true
+    })
     return sequenceDocument.sequence_value;
   };
 
   // 发送微信消息
-  sendWxTitle(baseUrl){
+  sendWxTitle(baseUrl) {
     const url = address.sendWxNoticeUrl + baseUrl
-    needle.get(url, function(err, resp, body){
-      if(err){
+    needle.get(url, function (err, resp, body) {
+      if (err) {
         console.log(chalk.red(err));
       }
     })
   }
 
-  async test(req, res, next){
+  async test(req, res, next) {
     let {
       userId,
       orderId,
       operationType
     } = req.body
-    const orderIdList = await ApkListSchema.findOne({orderId: orderId >> 0})
-    const result = await UserSchema.findOne({_id: orderIdList.user_id })
+    const orderIdList = await ApkListSchema.findOne({
+      orderId: orderId >> 0
+    })
+    const result = await UserSchema.findOne({
+      _id: orderIdList.user_id
+    })
     console.log('result', result);
     res.status(200).send(result)
     res.end();

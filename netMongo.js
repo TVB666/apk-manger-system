@@ -37,7 +37,6 @@ MongoClient.connect(url, {
     var useObj = [
     //   // {account: '560777', userName: '管理员小德', userId: 201, psw: md5(md5('345678')), creatTime: new Date().getTime(), manager: 1 , checkerId: 1},
     //   // {account: '560888', userName: '超级管理员null', userId: 1, psw: md5(md5('060100')), creatTime: new Date().getTime(), manager: 2 , checkerId: 0},
-    //   {account: '680768', userName: '邱园', userId: RandomNumBoth(), psw: md5(md5('123456')), creatTime: new Date().getTime(), manager: 1 , checkerId: 1},
       {account: 'test', userName: '测试', userId: RandomNumBoth(), psw: md5(md5('123456789')), creatTime: new Date().getTime(), manager: 0 , checkerId: 1},
     ]
     // // dbBase.collection("test").createIndex({"creatTime": 1},{expireAfterSeconds: 10})

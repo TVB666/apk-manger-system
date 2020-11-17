@@ -368,7 +368,7 @@ class ApkListComponent extends BaseDao {
                 orderStatus: orderStatus.ENUM_upload_err 
               }
             }
-            text =  `${orderIdList.buildName}上传失败。请再次上传`
+            const text =  `${orderIdList.buildName}上传失败。请再次上传`
             const baseUrl = `${approveKey}.send?text=${encodeURI(text)}`
             that.sendWxTitle(baseUrl)
           } else {
